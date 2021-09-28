@@ -14,10 +14,10 @@ class Error_Handler(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         # Handle errors that may be raised
-
+        error_channel = self.bot.get_guild(844325997566099497).get_channel(892221441481777202)
         error_embed = discord.Embed (
             title="An Error has Occurred",
-            description=f"**Error Type: {type(error)}** \n\n{error}"
+            description=f"```py\n{''.join(format_exception(type(error), error, None))}\n```"
         )
         error_embed.set_author (
             name=self.bot.user.name,
@@ -31,10 +31,11 @@ class Error_Handler(commands.Cog):
             discord.ext.commands.errors.MissingPermissions
         ]
 
+        message = None
         if type(error) not in non_critical_errors:
-            error_channel = self.bot.get_guild(844325997566099497).get_channel(892221441481777202)
-            full_error = "".join(format_exception(type(error), error, None))
-            await error_channel.send(f"Error flagged as critical: <@400337254989430784>\nFull Error Message:\n```py\n{full_error}\n```", embed=error_embed)
+            message = "The following error has been flagged as `critical`.\n||<@400337254989430784>||"
+        
+        await error_channel.send(message or "", embed=error_embed)
 
 
 def setup(bot):
