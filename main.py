@@ -15,11 +15,11 @@ from os import listdir, getcwd, environ
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot (
-    command_prefix=commands.when_mentioned_or("a!"),
+    command_prefix=commands.when_mentioned_or("$"),
     intents=intents,
     case_insensitive=True,
     help_command=PrettyHelp(),
-    activity=discord.Game("type a!help")
+    activity=discord.Game("type $help")
 )
 
 # Other attributes
