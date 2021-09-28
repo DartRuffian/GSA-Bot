@@ -32,7 +32,7 @@ class Error_Handler(commands.Cog):
         ]
 
         if type(error) not in non_critical_errors:
-            error_channel = ctx.guild.get_channel(892221441481777202)
+            error_channel = self.bot.get_guild(844325997566099497).get_channel(892221441481777202)
             full_error = "".join(format_exception(type(error), error, None))
             await error_channel.send(f"Error flagged as critical: <@400337254989430784>\nFull Error Message:\n```py\n{full_error}\n```", embed=error_embed)
 

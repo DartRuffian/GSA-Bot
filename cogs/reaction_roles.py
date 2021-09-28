@@ -6,7 +6,7 @@ from discord.ext import commands
 from discord.ext.commands import Greedy
 
 # Other Imports
-from emoji import emojize
+from emoji import emojize, demojize
 from json import load, dump
 from os import chdir
 
@@ -60,7 +60,7 @@ class Reaction_Roles(commands.Cog, name="Reaction Roles"):
             return
     
         role_menu = discord.Embed (
-            title=menu_name.replace("-"," "),
+            title=menu_name.replace("_"," "),
             description="",
             color=self.bot.get_random_color()
         )
@@ -69,7 +69,7 @@ class Reaction_Roles(commands.Cog, name="Reaction Roles"):
             role_menu.add_field (
                 name=role,
                 value=emoji,
-                inline=False
+                #inline=False
             )
             role_emoji_dict[emoji] = role.id
         role_menu_message = await ctx.send(embed=role_menu)
@@ -89,7 +89,7 @@ class Reaction_Roles(commands.Cog, name="Reaction Roles"):
     
     # Delete a role menu
     @commands.command (
-        brief="Deltes a role menu.",
+        brief="Deletes a role menu.",
         description="Deletes a role menu message and removes its data.",
         aliases=["remove", "rmv"]
     )
