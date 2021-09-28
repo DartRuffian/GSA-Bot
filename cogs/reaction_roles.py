@@ -6,7 +6,7 @@ from discord.ext import commands
 from discord.ext.commands import Greedy
 
 # Other Imports
-from emoji import emojize, demojize
+from emoji import emojize
 from json import load, dump
 from os import chdir
 
