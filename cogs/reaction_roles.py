@@ -138,7 +138,7 @@ class Reaction_Roles(commands.Cog, name="Reaction Roles"):
 
         for message in self.role_menus.keys():
             if payload.message_id == message.id:
-                if payload.emoji.is_custom_emoji:
+                if payload.emoji.is_custom_emoji():
                     emoji_name = f"<:{payload.emoji.name}:{payload.emoji.id}>"
                 else:
                     emoji_name = payload.emoji.name
@@ -155,7 +155,7 @@ class Reaction_Roles(commands.Cog, name="Reaction Roles"):
 
         for message in self.role_menus.keys():
             if payload.message_id == message.id:
-                if payload.emoji.is_custom_emoji:
+                if payload.emoji.is_custom_emoji():
                     emoji_name = f"<:{payload.emoji.name}:{payload.emoji.id}>"
                 else:
                     emoji_name = payload.emoji.name
