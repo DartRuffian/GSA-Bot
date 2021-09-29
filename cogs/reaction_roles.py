@@ -49,7 +49,7 @@ class Reaction_Roles(commands.Cog, name="Reaction Roles"):
     @commands.command (
         brief="Creates a role menu.",
         description="Creates an embed where users can add reactions to recieve roles.",
-        aliases=["add"]
+        aliases=["rr_add", "rr_create"]
     )
     @commands.has_permissions(manage_roles=True)
     async def create_role_menu(self, ctx, menu_name, roles: Greedy[discord.Role], *, emojis):
@@ -91,7 +91,7 @@ class Reaction_Roles(commands.Cog, name="Reaction Roles"):
     @commands.command (
         brief="Deletes a role menu.",
         description="Deletes a role menu message and removes its data.",
-        aliases=["remove", "rmv"]
+        aliases=["rr_remove", "rr_rmv"]
     )
     @commands.has_permissions(manage_roles=True)
     async def role_menu_remove(self, ctx, *, id):
