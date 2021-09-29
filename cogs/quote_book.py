@@ -3,6 +3,7 @@
 # Discord Imports
 import discord
 from discord.ext import commands
+from discord.utils import get
 
 # Other Imports
 from json import load, dump
@@ -14,11 +15,34 @@ class Quote_Book(commands.Cog, name="Quote Book"):
 
 
     @commands.group (
-        aliases=["qb"],
-        invoke_without_command=True
+        aliases=["qb"]
     )
-    async def quotebook(self, ctx):
-        pass
+    async def quotebook(self, ctx, *, alias):
+        if ctx.invoked_subcommand is None:
+            chdir(f"{self.bot.BASE_DIR}/resources")
+            with open("quotes.json", "r") as f:
+                quotes = load(f)
+            chdir(self.bot.BASE_DIR)
+
+            fetched_quote = None
+            for quote, data in quotes.items():
+                if alias in data["aliases"]:
+                    fetched_quote = [quote, data]
+
+            if fetched_quote is None:
+                await ctx.send(f"No quote was found under the alias `{alias}`, please check your spelling and try again!")
+                return
+            
+            author = get(self.bot.get_all_members(), id=fetched_quote[1]["author"])
+            uploader = get(self.bot.get_all_members(), id=fetched_quote[1]["uploaded_by"])
+            
+            quote_embed = discord.Embed (
+                title="Quote",
+                description=f"> \"{fetched_quote[0]}\"\n-{author.mention}",
+                color=self.bot.get_random_color()
+            )
+            quote_embed.set_footer(text=f"Quote uploaded by {uploader.nick or uploader.name}")
+            await ctx.send(embed=quote_embed)
     
     @quotebook.command(name="save")
     async def save_quote(self, ctx, author:discord.Member, aliases, *, message):
