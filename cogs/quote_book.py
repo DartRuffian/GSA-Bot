@@ -49,6 +49,7 @@ class Quote_Book(commands.Cog, name="Quote Book"):
         # Convert a string representation of a list to a list
         aliases = aliases.strip("[]")
         aliases = aliases.replace("'", "")
+        aliases = aliases.replace(", ", ",")
         aliases = aliases.split(",")
         
         chdir(f"{self.bot.BASE_DIR}/resources")
