@@ -59,19 +59,19 @@ class Reaction_Roles(commands.Cog, name="Reaction Roles"):
             await ctx.send(f"The number of roles is not the same as the number of emojis, please try again. \n`Role  Count: {len(roles)}`\n`Emoji Count: {len(emojis)}`")
             return
     
+        role_emoji_dict = {}
+        embed_desc = ""
+
+        for role, emoji in zip(roles, emojis):
+            embed_desc += f"**{emoji} | Role**"
+            role_emoji_dict[emoji] = role.id
+
         role_menu = discord.Embed (
             title=menu_name.replace("_"," "),
-            description="",
+            description=embed_desc,
             color=self.bot.get_random_color()
         )
-        role_emoji_dict = {}
-        for role, emoji in zip(roles, emojis):
-            role_menu.add_field (
-                name=role,
-                value=emoji,
-                #inline=False
-            )
-            role_emoji_dict[emoji] = role.id
+       
         role_menu_message = await ctx.send(embed=role_menu)
         for emoji in emojis:
             await role_menu_message.add_reaction(emoji)
