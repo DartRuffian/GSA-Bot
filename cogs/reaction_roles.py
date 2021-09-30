@@ -45,13 +45,21 @@ class Reaction_Roles(commands.Cog, name="Reaction Roles"):
     async def on_ready(self):
         await self.load_role_menus()
 
-    # Create a role menu
-    @commands.command (
-        brief="Creates a role menu.",
-        description="Creates an embed where users can add reactions to recieve roles.",
-        aliases=["rr_add", "rr_create"]
+    @commands.group (
+        aliases=["rr"],
+        invoke_without_command=True
     )
     @commands.has_permissions(manage_roles=True)
+    async def reaction_role_menu(self, ctx):
+        pass
+
+    # Create a role menu
+    @reaction_role_menu.command (
+        name="add",
+        brief="Creates a role menu.",
+        description="Creates an embed where users can add reactions to recieve roles.",
+        aliases=["create"]
+    )
     async def create_role_menu(self, ctx, menu_name, roles: Greedy[discord.Role], *, emojis):
         emojis = emojis.split(" ")
 
@@ -88,12 +96,12 @@ class Reaction_Roles(commands.Cog, name="Reaction Roles"):
         await self.load_role_menus()
     
     # Delete a role menu
-    @commands.command (
+    @reaction_role_menu.command (
+        name="remove",
         brief="Deletes a role menu.",
         description="Deletes a role menu message and removes its data.",
-        aliases=["rr_remove", "rr_rmv"]
+        aliases=["rmv"]
     )
-    @commands.has_permissions(manage_roles=True)
     async def role_menu_remove(self, ctx, *, id):
         if "-" in id:
             channel_id, message_id = id.split("-")
