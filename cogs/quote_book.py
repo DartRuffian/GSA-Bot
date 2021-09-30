@@ -15,7 +15,8 @@ class Quote_Book(commands.Cog, name="Quote Book"):
 
 
     @commands.group (
-        aliases=["qb"]
+        aliases=["qb"],
+        invoke_without_command=True
     )
     async def quotebook(self, ctx, *, alias):
         if ctx.invoked_subcommand is None:
@@ -88,14 +89,18 @@ class Quote_Book(commands.Cog, name="Quote Book"):
         with open("quotes.json", "r") as f:
             quotes = load(f)
         
+        fetched_quote = None
         for quote, data in quotes.items():
             if alias in data["aliases"]:
-                deleted_quote = [quote, await ctx.guild.fetch_member(quotes[quote]["author"])]
+                fetched_quote = [quote, data]
                 del quotes[quote]
                 break
-            
-            await ctx.send(f"No quote was found under the alias `{alias}`, double check your spelling and try again!")
+
+        if fetched_quote is None:
+            await ctx.send(f"No quote was found under the alias `{alias}`, please check your spelling and try again!")
             return
+        
+        author = get(self.bot.get_all_members(), id=fetched_quote[1]["author"])
         
         with open("quotes.json", "w") as f:
             dump(quotes, f, indent=2)
@@ -103,7 +108,7 @@ class Quote_Book(commands.Cog, name="Quote Book"):
 
         delete_quote_embed = discord.Embed (
             title="Quote has been deleted!",
-            description=f"> {deleted_quote[0]}\n-{deleted_quote[1].nick or deleted_quote[1].name}",
+            description=f"> {fetched_quote[0]}\n-{author.mention}",
             color=self.bot.get_random_color()
         )
         delete_quote_embed.set_footer(text=f"Quote was deleted by: {ctx.author.nick or ctx.author.name}")
