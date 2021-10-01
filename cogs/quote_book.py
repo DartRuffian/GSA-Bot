@@ -46,7 +46,9 @@ class Quote_Book(commands.Cog, name="Quote Book"):
             await ctx.send(embed=quote_embed)
     
     @quotebook.command(name="save")
-    async def save_quote(self, ctx, author:discord.Member, aliases, *, message):
+    async def save_quote(self, ctx, author:discord.Member, *, args):
+        args = args.replace(" ;; ", ";;") 
+        aliases, message = args.split(";;")
         # Convert a string representation of a list to a list
         aliases = aliases.strip("[]")
         aliases = aliases.replace("'", "")
