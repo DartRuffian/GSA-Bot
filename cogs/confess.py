@@ -21,6 +21,7 @@ class Confessions(commands.Cog, name="Confessions"):
         if not isinstance(ctx.channel, discord.channel.DMChannel):
             await ctx.message.delete()
             await ctx.send("This command can only be used in a private message with the bot, and your message has been deleted so that it won't be seen.", delete_after=3)
+            await ctx.author.send("Instead, run the command here.")
             return
         
         guild = self.bot.get_guild(844325997566099497)
