@@ -24,7 +24,7 @@ class Confessions(commands.Cog, name="Confessions"):
             return
         
         guild = self.bot.get_guild(844325997566099497)
-        confession_channel = guild.get_channel(888545261675245589)
+        confession_channel = guild.get_channel(847293323672682506)
 
         confession_embed = discord.Embed (
             title="Someone says....",
