@@ -7,3 +7,5 @@ GSA stands for "Gender and Sexuality Association", and is an open place for all 
 The bot offers many useful features, with more being added whenever they are requested. Some of the most used features are...
 - Reaction Roles
 - Quotebook
+- Various Moderation Commands
+- Anonymous Confessions
