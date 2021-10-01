@@ -20,13 +20,19 @@ class Confessions(commands.Cog, name="Confessions"):
     async def anonymous_confession(self, ctx, *, message):
         if not isinstance(ctx.channel, discord.channel.DMChannel):
             await ctx.message.delete()
-            await ctx.send("This command can only be used in a private message with the bot, and your message has been deleted so that it won't be seen.")
+            await ctx.send("This command can only be used in a private message with the bot, and your message has been deleted so that it won't be seen.", delete_after=3)
             return
         
         guild = self.bot.get_guild(844325997566099497)
         confession_channel = guild.get_channel(888545261675245589)
 
-        await confession_channel.send(message)
+        confession_embed = discord.Embed (
+            title="Someone says....",
+            description=message,
+            color=self.bot.get_random_color()
+        )
+
+        await confession_channel.send(embed=confession_embed)
         await ctx.author.send("Your confession has been recorded.")
 
 
