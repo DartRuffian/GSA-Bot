@@ -4,9 +4,6 @@
 import discord
 from discord.ext import commands
 
-# Utils
-from utils import Utils
-
 class Confessions(commands.Cog, name="Confessions"):
     def __init__(self, bot):
         self.bot = bot
