@@ -24,11 +24,11 @@ class Error_Handler(commands.Cog):
         await error_channel.send(message or "", embed=error_embed)
 
         if isinstance(error, commands.errors.CommandNotFound):
-            await ctx.send(f"The command `{ctx.message.content.split(' ')[0]}` was not recognized. Here is a list of all commands.")
+            await ctx.message.reply(f"The command `{ctx.message.content.split(' ')[0]}` was not recognized. Here is a list of all commands.")
             await ctx.send_help()
 
         else:
-            await ctx.send(embed=error_embed)
+            await ctx.message.reply(embed=error_embed)
 
 
 def setup(bot):

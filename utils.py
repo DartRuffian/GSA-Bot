@@ -21,7 +21,8 @@ class Utils:
             discord.ext.commands.errors.CommandNotFound,
             discord.ext.commands.errors.CommandOnCooldown,
             discord.ext.commands.errors.MissingRequiredArgument,
-            discord.ext.commands.errors.MissingPermissions
+            discord.ext.commands.errors.MissingPermissions,
+            discord.ext.commands.errors.PrivateMessageOnly
         ]
 
         message = None
