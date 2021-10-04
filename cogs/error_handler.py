@@ -14,10 +14,15 @@ class Error_Handler(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         # Handle errors that may be raised
+        if hasattr(ctx.command, 'on_error'):
+            # If the command already has a specific error handler, don't run anything here
+            return
+
         error_channel = self.bot.get_guild(844325997566099497).get_channel(892221441481777202)
         error_embed = discord.Embed (
             title="An Error has Occurred",
-            description=f"```py\n{''.join(format_exception(type(error), error, None))}\n```"
+            description=f"Message:\n```\n{ctx.message.content}\n```\nError:\n```py\n{''.join(format_exception(type(error), error, None))}\n```",
+            color=0x2F3136
         )
         error_embed.set_author (
             name=self.bot.user.name,
@@ -36,6 +41,7 @@ class Error_Handler(commands.Cog):
             message = "The following error has been flagged as `critical`.\n||<@400337254989430784>||"
         
         await error_channel.send(message or "", embed=error_embed)
+        await ctx.send(embed=error_embed)
 
 
 def setup(bot):
