@@ -1,14 +1,31 @@
 """ Utilities class for useful functions """
 
 # Imports
-from discord.ext import commands
-from json import load
-from os import chdir
+import discord
+from traceback import format_exception
 
 
 class Utils:
-    def is_owner():
-        # Return whether a given user is the bot author
-        async def predicate(ctx):
-            return ctx.author.id == 400337254989430784
-        return commands.check(predicate)
+    def create_error_embed(self, command, error):
+        error_embed = discord.Embed (
+            title="An Error has Occurred",
+            description=f"Message:\n```\n{command}\n```\nError:\n```py\n{''.join(format_exception(type(error), error, None))}\n```",
+            color=0x2F3136
+        )
+        error_embed.set_author (
+            name=self.bot.user.name,
+            icon_url=self.bot.user.avatar_url
+        )
+
+        non_critical_errors = [
+            discord.ext.commands.errors.CommandNotFound,
+            discord.ext.commands.errors.CommandOnCooldown,
+            discord.ext.commands.errors.MissingRequiredArgument,
+            discord.ext.commands.errors.MissingPermissions
+        ]
+
+        message = None
+        if type(error) not in non_critical_errors:
+            message = "The following error has been flagged as `critical`.\n||<@400337254989430784>||"
+        
+        return (message, error_embed)
