@@ -13,7 +13,8 @@ class Moderation(commands.Cog, name="Mod Only"):
     @commands.command (
         aliases=["delete", "del"],
         brief="Takes a number and deletes that many messages",
-        description="Takes an argument `limit` and deletes that many messages from the current channel."
+        description="Takes an argument `limit` and deletes that many messages from the current channel.",
+        hidden=True
     )
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, limit: int):
