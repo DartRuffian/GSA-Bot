@@ -22,6 +22,9 @@ class Confessions(commands.Cog, name="Confessions"):
         guild = self.bot.get_guild(844325997566099497)
         confession_channel = guild.get_channel(847293323672682506)
 
+        if "<" in message or ">" in message:
+            await ctx.author.send("Note that the angle brackets, the '<' and '>' characters, only mean that the message can be multiple words and aren't required.\n\nFor example, this is a perfectly good example of running the command: \n`$confess You're a cutie`")
+
         confession_embed = discord.Embed (
             description=message,
             color=self.bot.get_random_color()
@@ -38,7 +41,7 @@ class Confessions(commands.Cog, name="Confessions"):
             await ctx.author.send("Instead, run the command here.")
         
         elif isinstance(error, commands.errors.MissingRequiredArgument):
-            await ctx.send("Looks like you missed an argument there, make sure you type `$confess` followed by your message.")
+            await ctx.send("Looks like you missed an argument there, make sure you type `$confess` (or any other alias for the command) followed by your message.")
 
 
         error_channel = self.bot.get_guild(844325997566099497).get_channel(892221441481777202)
