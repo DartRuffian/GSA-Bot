@@ -10,7 +10,7 @@ class Confessions(commands.Cog, name="Confessions"):
 
 
     @commands.command (
-        aliases=["ac", "anon_confess"],
+        aliases=["ac", "confess", "anon_confess"],
         brief="Makes an anonymous confession",
         description="This command only works in a direct message with the bot, which takes a confession and sends it for you to keep it anonymous. Nothing is recorded."
     )
