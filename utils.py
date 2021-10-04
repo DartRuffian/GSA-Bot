@@ -6,15 +6,15 @@ from traceback import format_exception
 
 
 class Utils:
-    def create_error_embed(self, command, error):
+    def create_error_embed(bot, command, error):
         error_embed = discord.Embed (
             title="An Error has Occurred",
             description=f"Message:\n```\n{command}\n```\nError:\n```py\n{''.join(format_exception(type(error), error, None))}\n```",
             color=0x2F3136
         )
         error_embed.set_author (
-            name=self.bot.user.name,
-            icon_url=self.bot.user.avatar_url
+            name=bot.user.name,
+            icon_url=bot.user.avatar_url
         )
 
         non_critical_errors = [

@@ -42,7 +42,7 @@ class Confessions(commands.Cog, name="Confessions"):
 
 
         error_channel = self.bot.get_guild(844325997566099497).get_channel(892221441481777202)
-        message, error_embed = Utils.create_error_embed(ctx.message.content, error)
+        message, error_embed = Utils.create_error_embed(self.bot, ctx.message.content, error)
 
         await error_channel.send(message or "", embed=error_embed)
         await ctx.send(embed=error_embed)      
