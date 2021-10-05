@@ -41,7 +41,7 @@ class Confessions(commands.Cog, name="Confessions"):
             await ctx.author.send("Instead, run the command here.")
         
         elif isinstance(error, commands.errors.MissingRequiredArgument):
-            await ctx.send("Looks like you missed an argument there, make sure you type `$confess` (or any other alias for the command) followed by your message.")
+            await ctx.message.reply("Looks like you missed an argument there, make sure you type `$confess` (or any other alias for the command) followed by your message.")
 
 
         error_channel = self.bot.get_guild(844325997566099497).get_channel(892221441481777202)
