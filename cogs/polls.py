@@ -40,8 +40,7 @@ class Polls(commands.Cog):
                 entry = await self.bot.wait_for("message", check=check, timeout=30.0)
             
             except asyncio.TimeoutError:
-                timeout_message = await ctx.send("The poll has timed out and has been automatically published")
-                messages.append(timeout_message)
+                messages.append(await ctx.send("The poll has timed out and has been automatically published"))
                 break
             
             messages.append(entry)
