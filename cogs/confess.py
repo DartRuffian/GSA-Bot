@@ -1,13 +1,13 @@
-""" Anonymous Confessions """
-
 # Discord Imports
 import discord
 from discord.ext import commands
 
 # Other Imports
 from utils import Utils
+import asyncio
 
 class Confessions(commands.Cog, name="Confessions"):
+    """ Anonymous Confessions """
     def __init__(self, bot):
         self.bot = bot
 
@@ -20,7 +20,10 @@ class Confessions(commands.Cog, name="Confessions"):
     @commands.dm_only()
     async def anonymous_confession(self, ctx, *, message):
         guild = self.bot.get_guild(844325997566099497)
-        confession_channel = guild.get_channel(847293323672682506)
+        channel_aliases = {
+            "anon": 847293323672682506,
+            "vent": 894813821133262878
+        }
 
         if "<" in message or ">" in message:
             await ctx.author.send("Note that the angle brackets, the '<' and '>' characters, only mean that the message can be multiple words and aren't required.\n\nFor example, this is a perfectly good example of running the command: \n`$confess You're a cutie`")
@@ -29,6 +32,19 @@ class Confessions(commands.Cog, name="Confessions"):
             description=message,
             color=self.bot.get_random_color()
         )
+
+        def check(message):
+            return message.author == ctx.author and message.channel == ctx.channel and message.content.lower() in ["anon", "vent"]
+        
+        try:
+            await ctx.send("Would you like your message to be sent to #vent-no-answer or #anonymous-confessions? Respond with `vent` or `anon` to continue")
+            response = await self.bot.wait_for("message", check=check, timeout=30.0)
+        
+        except asyncio.TimeoutError:
+            await ctx.send("Your response has timed out, so no message has been sent.")
+            return
+        
+        confession_channel = guild.get_channel(channel_aliases[response.content.lower()])
 
         await confession_channel.send(embed=confession_embed)
         await ctx.author.send("Your confession has been recorded.")
