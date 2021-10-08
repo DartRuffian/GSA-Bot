@@ -1,5 +1,3 @@
-""" Quote Book """
-
 # Discord Imports
 import discord
 from discord.ext import commands
@@ -10,6 +8,7 @@ from json import load, dump
 from os import chdir
 
 class Quote_Book(commands.Cog, name="Quote Book"):
+    """ Quote Book """
     def __init__(self, bot):
         self.bot = bot
 

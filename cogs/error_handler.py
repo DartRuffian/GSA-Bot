@@ -1,5 +1,3 @@
-""" Error Handler """
-
 # Discord Imports
 import discord
 from discord.ext import commands
@@ -8,6 +6,7 @@ from discord.ext import commands
 from utils import Utils
 
 class Error_Handler(commands.Cog):
+    """ Global Error Handler """
     def __init__(self, bot):
         self.bot = bot
 

@@ -46,12 +46,12 @@ class Reaction_Roles(commands.Cog, name="Reaction Roles"):
         await self.load_role_menus()
 
     @commands.group (
-        aliases=["rr"],
+        aliases=["rr", "rrm"],
         invoke_without_command=True
     )
     @commands.has_permissions(manage_roles=True)
     async def reaction_role_menu(self, ctx):
-        pass
+        await ctx.send_help(self.reaction_role_menu)
 
     # Create a role menu
     @reaction_role_menu.command (
