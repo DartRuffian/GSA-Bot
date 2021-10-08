@@ -32,6 +32,26 @@ class Moderation(commands.Cog, name="Mod Only"):
         messages = [f"{deleted} message{' was' if deleted == 1 else 's were'} removed."]
         messages.extend(f"- **{author}**: {count}" for author, count in message_count.items())
         await ctx.send("\n".join(messages), delete_after=10)
+    
+    @commands.command (
+        aliases=["m"],
+        brief="Prevents a user from sending messages.",
+        description="Adds a role to the given member that prevents them from sending messages."
+    )
+    async def mute(self, ctx, target: discord.Member, *, reason=None):
+        mute_role = ctx.guild.get_role(895855240589492234)
+        await target.add_roles(mute_role, reason=reason)
+        await ctx.send(f"User {target} has been muted for the following reason: `{reason}`")
+    
+    @commands.command (
+        aliases=["u"],
+        brief="Unmutes a user",
+        description="Unmuted a user, run the help command for `mute` for more info."
+    )
+    async def unmute(self, ctx, target: discord.Member, *, reason=None):
+        mute_role = ctx.guild.get_role(895855240589492234)
+        await target.remove_roles(mute_role, reason=reason)
+        await ctx.send(f"User {target} has been unmuted for the following reason: `{reason}`")
 
 
 def setup(bot):
