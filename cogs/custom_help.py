@@ -46,7 +46,7 @@ class Help_Command(commands.HelpCommand):
             color=0x2F3136
         )
         for cog, commands in mapping.items():
-            filtered = await self.filter_commands(commands, sort=True)
+            filtered = await self.filter_commands(commands)
             command_signatures = [self.get_command_signature(c) for c in filtered]
 
             if command_signatures:
