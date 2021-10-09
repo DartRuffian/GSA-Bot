@@ -3,28 +3,7 @@ import discord
 from discord.ext import commands
 
 # Other Imports
-import itertools as it
-
-"""
-class MyHelpCommand(commands.MinimalHelpCommand):
-    def get_command_signature(self, command):
-        return '{0.clean_prefix}{1.qualified_name} {1.signature}'.format(self, command)
-
-class MyCog(commands.Cog):
-    def __init__(self, bot):
-        self._original_help_command = bot.help_command
-        bot.help_command = MyHelpCommand()
-        bot.help_command.cog = self
-
-    def cog_unload(self):
-        self.bot.help_command = self._original_help_command
-#######
-See the documentation: https://discordpy.readthedocs.io/en/latest/ext/commands/api.html#help-commands for more details.
-For migrating from old helpformatters: https://discordpy.readthedocs.io/en/latest/migrating.html#helpformatter-and-help-command-changes
-
-A walkthrough on subclassing help: 
-https://gist.github.com/InterStella0/b78488fb28cadf279dfd3164b9f0cf96
-"""
+from itertools import cycle
 
 class Help_Command(commands.HelpCommand):
     """ Custom Help Command """
@@ -32,7 +11,7 @@ class Help_Command(commands.HelpCommand):
         return f"{self.clean_prefix}{command.qualified_name} {command.signature}"
 
     async def send_bot_help(self, mapping):
-        color_characters = it.cycle([
+        color_characters = cycle([
             ("```diff\n-" , "\n```"),
             ("```css\n["  , "]\n```"),
             ("```fix\n"   , "\n```"),
