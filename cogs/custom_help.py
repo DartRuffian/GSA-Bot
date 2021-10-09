@@ -41,10 +41,11 @@ class Help_Command(commands.HelpCommand):
         ])
 
         help_embed = discord.Embed (
-            title="Help | All Cogs",
+            title="Help | General",
             description="",
             color=0x2F3136
         )
+        help_embed.description += "**__Basic Info__:**\nGSA stands for \"Gender and Sexuality Association\" and is an open place for all LGBT+ members and allies to have a good time together!\n\n**__Commands:__**\n"
         for cog, commands in mapping.items():
             filtered = await self.filter_commands(commands)
             command_signatures = [self.get_command_signature(c) for c in filtered]
