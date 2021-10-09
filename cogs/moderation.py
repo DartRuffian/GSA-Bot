@@ -2,6 +2,8 @@
 import discord
 from discord.ext import commands
 
+# Other Imports
+from datetime import datetime
 
 class Moderation(commands.Cog, name="Mod Only"):
     """ Mod-Specific Commands """
@@ -39,8 +41,24 @@ class Moderation(commands.Cog, name="Mod Only"):
     )
     async def mute(self, ctx, target: discord.Member, *, reason=None):
         mute_role = ctx.guild.get_role(895855240589492234)
+        if mute_role in ctx.author.roles:
+            await ctx.send(f"User `{target}` is already muted.")
+            return
         await target.add_roles(mute_role, reason=reason)
         await ctx.send(f"User {target} has been muted for the following reason: `{reason}`")
+
+        logging_channel = ctx.guild.get_channel(844690755070328852)
+        mute_embed = discord.Embed (
+            description=f"`{target.nick or target.name}` has been muted by **{ctx.author}**\n[Jump to Message]({ctx.message.jump_url})\n\nReason:\n> {reason}",
+            timestamp=datetime.utcnow(),
+            color=0x5fe468
+        )
+        mute_embed.set_author (
+            name=self.bot.user, 
+            icon_url=self.bot.user.avatar_url
+        )
+        mute_embed.set_footer(text=f"Role ID: {mute_role.id}")
+        await logging_channel.send(embed=mute_embed)
     
     @commands.command (
         aliases=["u"],
@@ -49,8 +67,24 @@ class Moderation(commands.Cog, name="Mod Only"):
     )
     async def unmute(self, ctx, target: discord.Member, *, reason=None):
         mute_role = ctx.guild.get_role(895855240589492234)
+        if mute_role not in ctx.author.roles:
+            await ctx.send(f"User `{target}` is not muted.")
+            return
         await target.remove_roles(mute_role, reason=reason)
         await ctx.send(f"User {target} has been unmuted for the following reason: `{reason}`")
+
+        logging_channel = ctx.guild.get_channel(844690755070328852)
+        mute_embed = discord.Embed (
+            description=f"`{target.nick or target.name}` has been unmuted by **{ctx.author}**\n[Jump to Message]({ctx.message.jump_url})\n\nReason:\n> {reason}",
+            timestamp=datetime.utcnow(),
+            color=0xf84b51
+        )
+        mute_embed.set_author (
+            name=self.bot.user, 
+            icon_url=self.bot.user.avatar_url
+        )
+        mute_embed.set_footer(text=f"Role ID: {mute_role.id}")
+        await logging_channel.send(embed=mute_embed)
 
 
 def setup(bot):
