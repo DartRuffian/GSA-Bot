@@ -1,13 +1,11 @@
 # Discord Imports
 import discord
 from discord.ext import commands
-from discord.utils import get
 
 # Keep Bot Online
 from webserver import keep_alive
 
 # Other imports
-from pretty_help import PrettyHelp
 from random import randint
 from os import listdir, getcwd, environ
 
@@ -18,8 +16,6 @@ bot = commands.Bot (
     command_prefix=commands.when_mentioned_or("$"),
     intents=intents,
     case_insensitive=True,
-    help_command=PrettyHelp(),
-    activity=discord.Game("type $help")
 )
 
 # Other attributes
@@ -34,7 +30,6 @@ async def on_ready():
     print("Logged in")
     print(f"Username: {bot.user.name}")
     print(f"Userid  : {bot.user.id}")
-    bot.AUTHOR = get(bot.get_all_members(), id=bot.AUTHOR)
 
 # Load all cogs in the "cogs" subfolder
 for filename in listdir("./cogs"):
