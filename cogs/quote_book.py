@@ -14,6 +14,8 @@ class Quote_Book(commands.Cog, name="Quote Book"):
 
 
     @commands.group (
+        brief="Save, delete, or search for a saved quote, do `help qb` for more info.",
+        description="If called without a subcommand, the bot will search for a quote with the given alias.",
         aliases=["qb"],
         invoke_without_command=True
     )
@@ -44,7 +46,11 @@ class Quote_Book(commands.Cog, name="Quote Book"):
             quote_embed.set_footer(text=f"Quote uploaded by {uploader.nick or uploader.name}")
             await ctx.send(embed=quote_embed)
     
-    @quotebook.command(name="save")
+    @quotebook.command (
+        name="save",
+        brief="Saves a quote to a list of aliases.",
+        description="Takes the author of the quote (typically a mention/ping), the list of aliases, and the message itself. The aliases must be formatted as so: `['alias1', 'alias2'] ;; ` followed by the message."
+    )
     async def save_quote(self, ctx, author:discord.Member, *, args):
         args = args.replace(" ;; ", ";;") 
         aliases, message = args.split(";;")
@@ -84,7 +90,11 @@ class Quote_Book(commands.Cog, name="Quote Book"):
 
         await ctx.send(embed=quote_embed)
     
-    @quotebook.command(name="delete")
+    @quotebook.command (
+        name="delete",
+        brief="Deletes a quote under a given alias",
+        description="Searches through all saved quotes and will delete the quote that the alias is saved to."
+    )
     async def delete_quote(self, ctx, alias):
         chdir(f"{self.bot.BASE_DIR}/resources")
         with open("quotes.json", "r") as f:

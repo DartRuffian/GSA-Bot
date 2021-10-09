@@ -1,5 +1,3 @@
-""" Reaction Role Menu """
-
 # Discord Imports
 import discord
 from discord.ext import commands
@@ -12,6 +10,7 @@ from os import chdir
 
 
 class Reaction_Roles(commands.Cog, name="Reaction Roles"):
+    """ Reaction Role Menus """
     def __init__(self, bot):
         self.bot = bot
     
@@ -46,6 +45,8 @@ class Reaction_Roles(commands.Cog, name="Reaction Roles"):
         await self.load_role_menus()
 
     @commands.group (
+        brief="Create or delete a role menu, do `help rr` for more info.",
+        description="Features several commands to create, remove, and edit (WIP) reaction role menus.", 
         aliases=["rr", "rrm"],
         invoke_without_command=True
     )

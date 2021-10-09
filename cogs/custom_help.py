@@ -52,8 +52,9 @@ class Help_Command(commands.HelpCommand):
 
             if command_signatures:
                 cog_name = getattr(cog, "qualified_name", "No Category")
-                for i in range(len(command_signatures)):
-                    command_signatures[i] = f"- `{command_signatures[i].strip(' ')}` — {commands[i].brief or 'No information given.'}\n"
+                for command_sig in command_signatures:
+                    i = command_signatures.index(command_sig)
+                    command_signatures[i] = f"• `{command_sig.strip(' ')}` — {commands[i].brief or 'No information given.'}\n"
                 
                 current_colors = next(color_characters)
                 help_embed.description += f"{current_colors[0]}{cog_name}{current_colors[1]}\n" + "".join(command_signatures)
@@ -63,46 +64,44 @@ class Help_Command(commands.HelpCommand):
 
     async def send_command_help(self, command):
         help_embed = discord.Embed (
-            title=f"Help: Command | {command.name}",
-            description=command.description or "No information given.",
+            title=f"Help | Command: {command.name}",
+            description=(command.description or "No information given.") + "\n\n",
             color=0x2F3136
         )
-
+        help_embed.description += f"Usage: `{self.get_command_signature(command)}`\n"
+        help_embed.set_footer(text="Note: Angle brackets, <>, represent a *required* argument, while regular brackets, [], represent an *optional* argument")
         if command.aliases:
-            aliases = [command.aliases]
-            for i in range(len(aliases)):
-                aliases[i] = f"`{aliases[i]}`"
-            help_embed.description += f"\nCommand Aliases: {', '.join(f'`{self.clean_prefix}{x}`' for x in command.aliases)}"
+            help_embed.description += f"Command Aliases: {', '.join(f'`{self.clean_prefix}{x}`' for x in command.aliases)}"
 
         channel = self.get_destination()
         await channel.send(embed=help_embed)
     
     async def send_group_help(self, group):
         help_embed = discord.Embed (
-            title=f"Help: Group | {group.qualified_name}",
-            description="",
+            title=f"Help | Group: {group.qualified_name}",
+            description=(group.description or "No information given.") + "\n\n",
             color=0x2F3136
         )
 
         for command in group.commands:
-            help_embed.description += f"`{command}` — {command.brief}\n"
+            help_embed.description += f"• `{command}` — {command.brief}\n"
         
+        help_embed.description += f"\nUsage: `{self.clean_prefix}{group.full_parent_name or group.name} <subcommand>` followed by that subcommand's arguments.\n"
         if group.aliases:
-            help_embed.description += f"\nGroup Aliases: {', '.join(f'`{self.clean_prefix}{x}`' for x in group.aliases)}"
+            help_embed.description += f"Group Aliases: {', '.join(f'`{self.clean_prefix}{x}`' for x in group.aliases)}"
 
         channel = self.get_destination()
         await channel.send(embed=help_embed)
     
-    # !help <cog>
     async def send_cog_help(self, cog):
         help_embed = discord.Embed (
-            title=f"Help: Cog | {cog.qualified_name}",
+            title=f"Help | Cog: {cog.qualified_name}",
             description=f"{cog.description}\n\nList of Commands:\n",
             color=0x2F3136
         )
 
         for command in cog.get_commands():
-            help_embed.description += f"- `{self.clean_prefix}{command}`\n"
+            help_embed.description += f"• `{self.clean_prefix}{command}` — {command.brief or 'No information given.'}\n"
 
         channel = self.get_destination()
         await channel.send(embed=help_embed)
@@ -113,18 +112,8 @@ class Help_Cog(commands.Cog, name="Help"):
     def __init__(self, bot):
         self.bot = bot
         bot.original_help_command = bot.help_command
-        bot.help_command = Help_Command()
+        bot.help_command = Help_Command(command_attrs={"brief": "Shows this message."})
         bot.help_command.cog = self
-    
-    @commands.command(hidden=True)
-    @commands.is_owner()
-    async def load(self, ctx):
-        self.bot.help_command = Help_Command()
-
-    @commands.command(hidden=True)
-    @commands.is_owner()
-    async def unload(self, ctx):
-        self.bot.help_command = self.bot.original_help_command
 
 
 def setup(bot):

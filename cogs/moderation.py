@@ -12,7 +12,7 @@ class Moderation(commands.Cog, name="Mod Only"):
     @commands.command (
         aliases=["delete", "del", "cleanup", "clean"],
         brief="Takes a number and deletes that many messages",
-        description="Takes an argument `limit` and deletes that many messages from the current channel."
+        description="Takes an argument `limit` and deletes that many messages from the current channel, optional argument to delete messages that only contain a given phrase."
     )
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, limit: int, *, content_to_delete=None):
@@ -45,7 +45,7 @@ class Moderation(commands.Cog, name="Mod Only"):
     @commands.command (
         aliases=["u"],
         brief="Unmutes a user",
-        description="Unmuted a user, run the help command for `mute` for more info."
+        description="Unmutes a user, run the help command for `mute` for more info."
     )
     async def unmute(self, ctx, target: discord.Member, *, reason=None):
         mute_role = ctx.guild.get_role(895855240589492234)
