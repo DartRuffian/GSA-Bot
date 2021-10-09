@@ -7,6 +7,7 @@ from webserver import keep_alive
 
 # Other imports
 from random import randint
+from datetime import datetime
 from os import listdir, getcwd, environ
 
 # Define the bot
@@ -14,14 +15,15 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot (
     command_prefix=commands.when_mentioned_or("$"),
-    intents=intents,
     case_insensitive=True,
+    intents=intents,
 )
 
 # Other attributes
 bot.AUTHOR = 400337254989430784
 bot.BASE_DIR = getcwd()
 bot.get_random_color = lambda: int("%06x" % randint(0, 0xFFFFFF), 16)
+bot.launch_time = datetime.utcnow()
 
 
 @bot.event 
