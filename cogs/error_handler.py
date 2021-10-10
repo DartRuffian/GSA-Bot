@@ -13,21 +13,11 @@ class Error_Handler(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         # Handle errors that may be raised
-        if hasattr(ctx.command, 'on_error'):
+        if hasattr(ctx.command, "on_error"):
             # If the command already has a specific error handler, don't run anything here
             return
 
-        error_channel = self.bot.get_guild(844325997566099497).get_channel(892221441481777202)
-        message, error_embed = Utils.create_error_embed(self.bot, ctx.message.content, error)
-        
-        await error_channel.send(message or "", embed=error_embed)
-
-        if isinstance(error, commands.errors.CommandNotFound):
-            await ctx.message.reply(f"The command `{ctx.message.content.split(' ')[0]}` was not recognized. Here is a list of all commands.")
-            await ctx.send_help()
-
-        else:
-            await ctx.message.reply(embed=error_embed)
+        await Utils.log_error(self.bot, ctx, error)
 
 
 def setup(bot):

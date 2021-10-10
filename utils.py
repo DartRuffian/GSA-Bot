@@ -2,10 +2,24 @@
 
 # Imports
 import discord
+from discord.ext import commands
 from traceback import format_exception
 
 
 class Utils:
+    async def log_error(bot, ctx, error):
+        error_channel = bot.get_guild(844325997566099497).get_channel(892221441481777202)
+        message, error_embed = Utils.create_error_embed(bot, ctx.message.content, error)
+        
+        await error_channel.send(message or "", embed=error_embed)
+
+        if isinstance(error, commands.errors.CommandNotFound):
+            await ctx.message.reply(f"The command `{ctx.message.content.split(' ')[0]}` was not recognized. Here is a list of all commands.")
+            await ctx.send_help()
+
+        else:
+            await ctx.message.reply(embed=error_embed)
+
     def create_error_embed(bot, command, error):
         error_embed = discord.Embed (
             title="An Error has Occurred",
