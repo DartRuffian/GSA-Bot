@@ -32,22 +32,23 @@ class Confessions(commands.Cog, name="Confessions"):
             description=message,
             color=self.bot.get_random_color()
         )
+        confession_embed.set_footer(text=f"Want to talk about something anonymously? Simply privately message the bot \"{ctx.prefix}ac\" followed by your message.")
 
         def check(message):
             return message.author == ctx.author and message.channel == ctx.channel and message.content.lower() in ["anon", "vent"]
         
         try:
-            await ctx.send("Would you like your message to be sent to #vent-no-answer or #anonymous-confessions? Respond with `vent` or `anon` to continue")
+            await ctx.send("Would you like your message to be sent to <#894813821133262878> or <#847293323672682506>? Respond with `vent` or `anon` to continue")
             response = await self.bot.wait_for("message", check=check, timeout=30.0)
         
         except asyncio.TimeoutError:
             await ctx.send("Your response has timed out, so no message has been sent.")
             return
         
-        confession_channel = guild.get_channel(channel_aliases[response.content.lower()])
+        channel = guild.get_channel(channel_aliases[response.content.lower()])
 
-        await confession_channel.send(embed=confession_embed)
-        await ctx.author.send("Your confession has been recorded.")
+        confession = await channel.send(embed=confession_embed)
+        await ctx.author.send(f"Your confession has been recorded.\nYou can view it here: <{confession.jump_url}>")
     
     @anonymous_confession.error
     async def confession_error(self, ctx, error):
