@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 
 # Other Imports
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class Moderation(commands.Cog, name="Mod Only"):
     """ Mod-Specific Commands """
@@ -39,6 +39,7 @@ class Moderation(commands.Cog, name="Mod Only"):
         brief="Prevents a user from sending messages.",
         description="Adds a role to the given member that prevents them from sending messages."
     )
+    @commands.has_permissions(manage_roles=True)
     async def mute(self, ctx, target: discord.Member, *, reason=None):
         mute_role = ctx.guild.get_role(895855240589492234)
         if mute_role in ctx.author.roles:
@@ -65,6 +66,7 @@ class Moderation(commands.Cog, name="Mod Only"):
         brief="Unmutes a user",
         description="Unmutes a user, run the help command for `mute` for more info."
     )
+    @commands.has_permissions(manage_roles=True)
     async def unmute(self, ctx, target: discord.Member, *, reason=None):
         mute_role = ctx.guild.get_role(895855240589492234)
         if mute_role not in ctx.author.roles:
@@ -85,6 +87,24 @@ class Moderation(commands.Cog, name="Mod Only"):
         )
         mute_embed.set_footer(text=f"Role ID: {mute_role.id}")
         await logging_channel.send(embed=mute_embed)
+    
+
+    @commands.command (
+        brief="Sends a list of all channels who's last message was sent more than two weeks ago.",
+        description="Sends a list of all channels who's last message was sent more than two weeks ago."
+    )
+    @commands.has_permissions(manage_channels=True)
+    async def prune(self, ctx):
+        prune_embed = discord.Embed (
+            description="This is a list of all channels who's last message was sent more than two weeks ago. \nChannel Name — Days Since Last Message\n\n",
+            color=self.bot.get_random_color()
+        )
+        async with ctx.channel.typing():
+            for channel in ctx.guild.text_channels:
+                async for message in channel.history(limit=1):
+                    if (datetime.now() - message.created_at) >= timedelta(days=14):
+                        prune_embed.description += f"{channel.mention} — {str(datetime.now() - message.created_at).split(', ')[0]}\n"
+            await ctx.message.reply(embed=prune_embed)
 
 
 def setup(bot):
