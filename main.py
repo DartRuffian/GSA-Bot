@@ -41,8 +41,8 @@ for filename in listdir("./cogs"):
 
 keep_alive()
 try:
-    with open("token.txt","r") as f:
-        TOKEN = f.read()
+    with open("tokens.txt", "r") as f:
+        TOKEN = f.read().split("\n")[0]
 except FileNotFoundError:
     TOKEN = environ.get("DISCORD_BOT_SECRET") 
 
