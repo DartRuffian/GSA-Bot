@@ -4,6 +4,7 @@ from discord.ext import commands
 
 # Other Imports
 import requests
+from os import environ
 
 # Utils
 from utils import Utils
@@ -12,9 +13,11 @@ class Art_Utils(commands.Cog, name="Artist Utilities"):
     """ Cog description """
     def __init__(self, bot):
         self.bot = bot
-        with open("tokens.txt", "r") as f:
-            # Load the remove.bg api key
-            self.RBG_TOKEN = f.read().split("\n")[1]
+        try:
+            with open("tokens.txt", "r") as f:
+                self.RBG_TOKEN = f.read().split("\n")[1]
+        except FileNotFoundError:
+            self.RBG_TOKEN = environ.get("RBG_TOKEN") 
 
 
     @commands.command(
