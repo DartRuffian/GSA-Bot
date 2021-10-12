@@ -15,6 +15,7 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot (
     command_prefix=commands.when_mentioned_or("$"),
+    owner_id=400337254989430784,
     case_insensitive=True,
     intents=intents,
 )
