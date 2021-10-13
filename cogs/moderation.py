@@ -35,6 +35,32 @@ class Moderation(commands.Cog, name="Mod Only"):
         await ctx.send("\n".join(messages), delete_after=10)
     
     @commands.command (
+        brief="Similar to purge, but stops at a specific message.",
+        description="Instead of taking a number of messages to delete like `purge`, this command instead will delete messages up until a certain message is met.",
+        aliases=["pu", "clean_until", "cu", "delete_until", "del_until", "du"]
+    )
+    @commands.has_permissions(manage_messages=True)
+    async def purge_until(self, ctx, message_to_delete: discord.Message):
+        await ctx.message.delete()
+        message_count = {}
+
+        while True:
+            async for message in message_to_delete.channel.history(limit=1):
+                if message.author in message_count.keys():
+                    message_count[message.author] += 1
+                else:
+                    message_count[message.author] = 1
+                await message.delete()
+
+                if message_to_delete == message:
+                    deleted = sum(message_count.values())
+                    messages = [f"{deleted} message{' was' if deleted == 1 else 's were'} removed."]
+                    messages.extend(f"- **{author}**: {count}" for author, count in message_count.items())
+                    await ctx.send("\n".join(messages), delete_after=10)
+                    return
+
+    
+    @commands.command (
         aliases=["m"],
         brief="Prevents a user from sending messages.",
         description="Adds a role to the given member that prevents them from sending messages."
