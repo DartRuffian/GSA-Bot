@@ -21,6 +21,18 @@ class Utils:
             await ctx.message.reply(embed=error_embed)
 
     def create_error_embed(bot, command, error):
+        hide_args_aliases = [
+            # list of commands/aliases to hide the arguments of, most notably the anonymous confession command
+            "anonymous_confession",
+            "anon_confess",
+            "confess",
+            "ac",
+        ]
+
+        for alias in hide_args_aliases:
+            if command[1:].startswith(alias):
+                command = command.split(" ")[0] + " <arguments have been hidden for privacy reasons>"
+
         error_embed = discord.Embed (
             title="An Error has Occurred",
             description=f"Message:\n```\n{command}\n```\nError:\n```py\n{''.join(format_exception(type(error), error, None))}\n```",
@@ -41,6 +53,6 @@ class Utils:
 
         message = None
         if type(error) not in non_critical_errors:
-            message = "The following error has been flagged as `critical`.\n||<@400337254989430784>||"
+            message = f"The following error has been flagged as `critical`.\n||<@{bot.owner_id}>||"
         
         return (message, error_embed)
