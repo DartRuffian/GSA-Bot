@@ -69,7 +69,11 @@ class Confessions(commands.Cog, name="Confessions"):
 
         else:
             confession = await channel.send(embed=confession_embed)
-            await ctx.author.send(f"Your confession has been recorded. You can view it here: <{confession.jump_url}>")
+            link_embed = discord.Embed(
+                description=f"Your confession has been recorded. \n[You can view your message here.]({confession.jump_url}/ \"Click to jump!\")",
+                color=0x2F3136
+            )
+            await ctx.author.send(embed=link_embed)
     
     @anonymous_confession.error
     async def confession_error(self, ctx, error):
