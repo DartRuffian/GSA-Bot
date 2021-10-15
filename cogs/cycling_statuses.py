@@ -10,7 +10,7 @@ class Cycling_Statuses(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.statuses = []
-        with open(f"{self.bot.BASE_DIR}/resources/quotes.txt", "r") as f:
+        with open(f"{self.bot.BASE_DIR}/resources/statuses.txt", "r") as f:
             self.statuses.extend([line.strip(" \n") for line in f.readlines()])
     
     @tasks.loop(seconds=15)
