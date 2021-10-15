@@ -9,14 +9,9 @@ class Cycling_Statuses(commands.Cog):
     """ Pick a random status from a list """
     def __init__(self, bot):
         self.bot = bot
-        self.statuses = [
-            "Trans rights are human rights!",
-            "\"I hate the word homophobia. It's not a phobia. You're not scared. You're an asshole\" - Morgan Freeman",
-            "Love is love!",
-            "Let's get one thing straight, I'M NOT!",
-            "\"Being gay is natural. Hating gay is a lifestyle choice.\" - John Fugelsang",
-            "\"From a religious point of view, if God had thought homosexuality is a sin, he would not have created gay people.\" - Howard Dean"
-        ]
+        self.statuses = []
+        with open(f"{self.bot.BASE_DIR}/resources/quotes.txt", "r") as f:
+            self.statuses.extend([line.strip(" \n") for line in f.readlines()])
     
     @tasks.loop(seconds=15)
     async def update_status(self):
