@@ -12,14 +12,12 @@ class Cycling_Statuses(commands.Cog):
         self.statuses = []
         with open(f"{self.bot.BASE_DIR}/resources/statuses.txt", "r") as f:
             self.statuses.extend([line.strip(" \n") for line in f.readlines()])
+        self.update_status.start()
     
     @tasks.loop(seconds=15)
     async def update_status(self):
+        await self.bot.wait_until_ready()
         await self.bot.change_presence(activity=discord.Game(rand_choice(self.statuses)))
-    
-    @commands.Cog.listener()
-    async def on_ready(self):
-        self.update_status.start()
 
 
 def setup(bot):
