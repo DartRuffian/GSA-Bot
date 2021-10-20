@@ -27,6 +27,22 @@ class Confessions(commands.Cog, name="Confessions"):
             "will": 400337254989430784
         }
 
+        def check_trigger_warnings(message):
+            return message.author == ctx.author and message.channel == ctx.channel and message.content.lower() in ["cancel", "continue"]
+        
+        try:
+            await ctx.send("If your message contains sensitive content, please include trigger warnings at the begining of your message. \nType `cancel` to cancel the publishing of your message and add trigger warnings to the begining if necessary or `continue` to continue.")
+            response = await self.bot.wait_for("message", check=check_trigger_warnings, timeout=30.0)
+        
+        except asyncio.TimeoutError:
+            await ctx.send("Your response has timed out, so no message has been sent.")
+            return
+        
+        if response.content.lower() == "cancel":
+            await ctx.send("Your message has been canceled.")
+            return
+
+
         if "<" in message or ">" in message:
             await ctx.author.send("Note that the angle brackets, the '<' and '>' characters, only mean that the message can be multiple words and aren't required.\n\nFor example, this is a perfectly good example of running the command: \n`$confess You're a cutie`")
 
@@ -36,12 +52,12 @@ class Confessions(commands.Cog, name="Confessions"):
         )
         confession_embed.set_footer(text=f"Want to talk about something anonymously? Simply privately message the bot \"{ctx.prefix}ac\" followed by your message.")
 
-        def check(message):
+        def check_message_target(message):
             return message.author == ctx.author and message.channel == ctx.channel and message.content.lower() in channel_aliases.keys()
         
         try:
             await ctx.send("Would you like your message to be sent to <#894813821133262878>, <#847293323672682506>, or William (DartRuffian)'s private messages? Respond with `vent`, `anon`, or `will` to continue. If you choose to have your message sent to William, please be aware that your discord id will be temporarily saved so that William can respond to it. This information is kept private and deleted once the conversation is over.")
-            response = await self.bot.wait_for("message", check=check, timeout=30.0)
+            response = await self.bot.wait_for("message", check=check_message_target, timeout=30.0)
         
         except asyncio.TimeoutError:
             await ctx.send("Your response has timed out, so no message has been sent.")
