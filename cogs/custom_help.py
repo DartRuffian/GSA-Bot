@@ -22,7 +22,7 @@ class Help_Command(commands.HelpCommand):
         help_embed = discord.Embed (
             title="Help | General",
             description="",
-            color=0x2F3136
+            color=self.bot.transparent_color
         )
         help_embed.description += "**__Basic Info__:**\nGSA stands for \"Gender and Sexuality Association\" and is an open place for all LGBT+ members and allies to have a good time together!\n\n**__Commands:__**\n"
         for cog, commands in mapping.items():
@@ -45,7 +45,7 @@ class Help_Command(commands.HelpCommand):
         help_embed = discord.Embed (
             title=f"Help | Command: {command.name}",
             description=(command.description or "No information given.") + "\n\n",
-            color=0x2F3136
+            color=self.bot.transparent_color
         )
         help_embed.description += f"Usage: `{self.get_command_signature(command)}`\n"
         help_embed.set_footer(text="Note: Angle brackets, <>, represent a *required* argument, while regular brackets, [], represent an *optional* argument")
@@ -59,7 +59,7 @@ class Help_Command(commands.HelpCommand):
         help_embed = discord.Embed (
             title=f"Help | Group: {group.qualified_name}",
             description=(group.description or "No information given.") + "\n\n",
-            color=0x2F3136
+            color=self.bot.transparent_color
         )
 
         for command in group.commands:
@@ -76,7 +76,7 @@ class Help_Command(commands.HelpCommand):
         help_embed = discord.Embed (
             title=f"Help | Cog: {cog.qualified_name}",
             description=f"{cog.description}\n\nList of Commands:\n",
-            color=0x2F3136
+            color=self.bot.transparent_color
         )
 
         for command in cog.get_commands():

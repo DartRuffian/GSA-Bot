@@ -36,7 +36,7 @@ class Utils:
         error_embed = discord.Embed (
             title="An Error has Occurred",
             description=f"Message:\n```\n{command}\n```\nError:\n```py\n{''.join(format_exception(type(error), error, None))}\n```",
-            color=0x2F3136
+            color=bot.transparent_color
         )
         error_embed.set_author (
             name=bot.user.name,

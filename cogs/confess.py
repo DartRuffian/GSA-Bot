@@ -31,7 +31,7 @@ class Confessions(commands.Cog, name="Confessions"):
             return message.author == ctx.author and message.channel == ctx.channel and message.content.lower() in ["cancel", "continue"]
         
         try:
-            await ctx.send("If your message contains sensitive content, please include trigger warnings at the begining of your message. \nType `cancel` to cancel the publishing of your message and add trigger warnings to the begining if necessary or `continue` to continue.")
+            await ctx.send(f"If your message contains sensitive content, please include trigger warnings at the beginning of your message. \nNote: You can type `{ctx.prefix}triggers` to get a \"full\" list of triggers. \n\nType `cancel` to cancel the publishing of your message and add trigger warnings to the begining if necessary or `continue` to continue.")
             response = await self.bot.wait_for("message", check=check_trigger_warnings, timeout=30.0)
         
         except asyncio.TimeoutError:
@@ -87,7 +87,7 @@ class Confessions(commands.Cog, name="Confessions"):
             confession = await channel.send(embed=confession_embed)
             link_embed = discord.Embed(
                 description=f"Your confession has been recorded. \n[You can view your message here.]({confession.jump_url}/ \"Click to jump!\")",
-                color=0x2F3136
+                color=self.bot.transparent_color
             )
             await ctx.author.send(embed=link_embed)
     
@@ -140,6 +140,30 @@ class Confessions(commands.Cog, name="Confessions"):
         
         else:
             await ctx.send("There is currently another private confession with another user.")
+    
+    @commands.command(aliases=["triggers"])
+    async def trigger_list(self, ctx):
+        trigger_embed = discord.Embed (
+            description="The following is not a full list of triggers, but covers the more common ones that may come up.",
+            color=self.bot.transparent_color
+        )
+        trigger_embed.set_footer(text="In short, if you think something may offend someone, put a trigger warning and put the possibly offensive text in a spoiler.")
+        
+        possible_triggers = {
+            "Suicide": "The act of ending one's own life.",
+            "Self Harm": "The act of harming oneself; may be abbreviated to 'sh'.",
+            "Sexual Assault": "The act of someone *intentionally* touches someone without that person's consent, or coerces someone to engage in a sexual act without their consent.",
+            "Eating Disorders": "Disorders that are related to eating, such as anorexia, binge eating disorder, etc.",
+            "Extreme Cases of Homophobia, Transphobia, etc.": "Minor cases of <x>phobia, such as someone being called the f-slur, don't need a trigger warning but the extreme cases will. One example includes ||being told to kill yourself because of your sexuality, gender, etc.||",
+            "Abuse": "Someone being physically or psychologically harmed, this includes abuse from family, friends, etc."
+        }
+
+        for trigger, definition in possible_triggers.items():
+            trigger_embed.add_field (
+                name=trigger,
+                value=definition
+            )
+        await ctx.send(embed=trigger_embed)
 
 
 def setup(bot):

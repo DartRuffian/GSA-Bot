@@ -24,6 +24,7 @@ bot = commands.Bot (
 bot.AUTHOR = 400337254989430784
 bot.BASE_DIR = getcwd()
 bot.get_random_color = lambda: int("%06x" % randint(0, 0xFFFFFF), 16)
+bot.transparent_color = 0x2F3136
 bot.launch_time = datetime.utcnow()
 
 
