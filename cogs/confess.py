@@ -31,7 +31,7 @@ class Confessions(commands.Cog, name="Confessions"):
             return message.author == ctx.author and message.channel == ctx.channel and message.content.lower() in ["cancel", "continue"]
         
         try:
-            await ctx.send(f"If your message contains sensitive content, please include trigger warnings at the beginning of your message. \nNote: You can type `{ctx.prefix}triggers` to get a \"full\" list of triggers. \n\nType `cancel` to cancel the publishing of your message and add trigger warnings to the begining if necessary or `continue` to continue.")
+            await ctx.send(f"If your message contains sensitive content, please include trigger warnings at the beginning of your message. \nNote: You can type `{ctx.prefix}trigger list` to get a \"full\" list of triggers. \n\nType `cancel` to cancel the publishing of your message and add trigger warnings to the begining if necessary or `continue` to continue.")
             response = await self.bot.wait_for("message", check=check_trigger_warnings, timeout=30.0)
         
         except asyncio.TimeoutError:
