@@ -141,7 +141,24 @@ class Confessions(commands.Cog, name="Confessions"):
         else:
             await ctx.send("There is currently another private confession with another user.")
     
-    @commands.command(aliases=["triggers"])
+
+    @commands.group (
+        brief="Trigger related commands",
+        description="If called without a subcommand, the bot will say what a trigger is and *why* trigger warnings are necessary.",
+        invoke_without_command=True
+    )
+    async def trigger(self, ctx):
+        trigger_embed = discord.Embed (
+            description="> \"A trigger is something that sets off a memory tape or flashback transporting the person back to the event of her/his original trauma.\"\n- PsychCentral (<https://psychcentral.com/lib/what-is-a-trigger>) \n\nTriggers are very personal and are most commonly activated by sight and sound. So please be considerate when discussing topics that may make others uncomfortable.",
+            color=self.bot.transparent_color
+        )
+        await ctx.send(embed=trigger_embed)
+
+    @trigger.command (
+        name="list",
+        brief="Sends a list of possible triggers",
+        description="Sends a list of possible triggers and their definitions. Messages that contain these topics **must** have a trigger warning and use spoiler tags."
+    )
     async def trigger_list(self, ctx):
         trigger_embed = discord.Embed (
             description="The following is not a full list of triggers, but covers the more common ones that may come up.",
