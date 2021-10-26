@@ -28,7 +28,7 @@ class Moderation(commands.Cog, name="Mod Only"):
             }
             embed = discord.Embed (
                 description="Here's a list of all possible arguments and what they do.",
-                color=self.bot.EMBED_COLOR
+                color=self.bot.transparent_color
             )
             for tag, meaning in args_desc.items():
                 embed.add_field (
