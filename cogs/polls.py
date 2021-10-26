@@ -24,7 +24,6 @@ class Polls(commands.Cog):
         brief="Creates a simple poll",
         description="Creates a poll with a given question, and uses emojis to count votes"
     )
-    @has_permissions(manage_channels=True)
     async def poll(self, ctx, *, question):
         messages = [ctx.message] # List of messages to delete after creating the poll
         poll_answers = []        # List of answers to the poll
