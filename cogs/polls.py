@@ -52,7 +52,7 @@ class Polls(commands.Cog):
         await ctx.channel.delete_messages(messages)
 
         answer = "\n".join(f"{keycap}: {content}" for keycap, content in poll_answers)
-        poll_message = await ctx.send(f"{question}\n\n{answer}")
+        poll_message = await ctx.send(f"{question}\n\n{answer}\n\n(Poll was created by {ctx.author.mention})")
         for emoji, _ in poll_answers:
             await poll_message.add_reaction(emoji)
 
