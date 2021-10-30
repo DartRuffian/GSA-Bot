@@ -5,6 +5,9 @@ from discord.ext.commands import Greedy
 
 # Other Imports
 from datetime import datetime, timedelta
+import asyncio
+
+from discord.ext.commands.core import has_permissions
 
 class Moderation(commands.Cog, name="Mod Only"):
     """ Mod-Specific Commands """
@@ -148,6 +151,40 @@ class Moderation(commands.Cog, name="Mod Only"):
                     if (datetime.now() - message.created_at) >= timedelta(days=14):
                         prune_embed.description += f"{channel.mention} — {str(datetime.now() - message.created_at).split(', ')[0]}\n"
             await ctx.message.reply(embed=prune_embed)
+
+    @commands.command(aliases=["va"], hidden=True)
+    @has_permissions(administrator=True)
+    async def view_anon(self, ctx, message_id):
+        #if ctx.channel.id != 844675657304375300: # Admin Chat channel
+        if ctx.channel.id != 903858066573918270: # Testing Channel
+            await ctx.message.delete()
+            await ctx.author.send("This command should only be used in <#844675657304375300> because it reveals private information. Please try again in the proper channel.")
+            return
+        
+        message_id = message_id.replace("-", "/")
+        # Jump urls are stored as guild_id/channel_id/message_id
+        # When copying a message id it is saved as channel_id-message_id
+        confirm_message = await ctx.send(f"@everyone\n{ctx.author} has requested to look for a private message with the following id: `{message_id}`. Please have at least two other moderators (and the user who executed the command; so 4 total reactions) react with ✅ to confirm this action.")
+        await confirm_message.add_reaction("✅")
+
+        def check(reaction, user):
+            return str(reaction.emoji) == "✅" and reaction.count >= 4 and "overseers" in str(user.roles)
+        
+        try:
+            _, _ = await self.bot.wait_for("reaction_add", timeout=60, check=check)
+            await ctx.send("Action Approved: Searching for message...")
+        except asyncio.TimeoutError:
+            await ctx.send("Message has automatically timed out after 60 seconds.")
+            return
+        
+        for channel in self.bot.private_channels:
+            async for message in channel.history(limit=30):
+                if message.embeds:
+                    for description in [embed.description for embed in message.embeds]:
+                        if message_id in description:
+                            await ctx.send(f"Author: {channel.recipient}\nAuthor ID: `{channel.recipient.id}`")
+                            return
+        await ctx.send(f"No messages were found with an id of `{message_id}`.\n\nThis may be because the private message is no longer cached, which is a limitation from Discord itself. For the message to be re-cached, the author of the origianl private message will have to send a message to the bot again.")
 
 
 def setup(bot):
