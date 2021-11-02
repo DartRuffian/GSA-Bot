@@ -22,8 +22,8 @@ class Confessions(commands.Cog, name="Confessions"):
     async def anonymous_confession(self, ctx, *, message):
         guild = self.bot.get_guild(844325997566099497)
         channel_aliases = {
-            "anon": 847293323672682506,
-            "vent": 894813821133262878,
+            "vent-na": 894813821133262878,
+            "vent": 888545261675245589,
             "will": 400337254989430784
         }
 
@@ -56,7 +56,7 @@ class Confessions(commands.Cog, name="Confessions"):
             return message.author == ctx.author and message.channel == ctx.channel and message.content.lower() in channel_aliases.keys()
         
         try:
-            await ctx.send("Would you like your message to be sent to <#894813821133262878>, <#847293323672682506>, or William (DartRuffian)'s private messages? Respond with `vent`, `anon`, or `will` to continue. If you choose to have your message sent to William, please be aware that your discord id will be temporarily saved so that William can respond to it. This information is kept private and deleted once the conversation is over.")
+            await ctx.send("Would you like your message to be sent to <#894813821133262878>, <#888545261675245589>, or William (DartRuffian)'s private messages? Respond with `vent-na`, `vent`, or `will` to continue. If you choose to have your message sent to William, please be aware that your discord id will be temporarily saved so that William can respond to it. This information is kept private and deleted once the conversation is over.")
             response = await self.bot.wait_for("message", check=check_message_target, timeout=30.0)
         
         except asyncio.TimeoutError:
