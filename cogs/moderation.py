@@ -214,12 +214,12 @@ class Moderation(commands.Cog, name="Mod Only"):
                 await ctx.send("This message has timed automatically after 30 seconds, please try again.", delete_after=10)
         
         def check_mod_vote(reaction, user):
-            if str(reaction.emoji) == "✅" and reaction.count >= 2 and "overseers" in str(user.roles):
+            if str(reaction.emoji) == "✅" and reaction.count >= 4 and "overseers" in str(user.roles):
                 approved_by.append(f"{user.mention}\n")
                 return True
         
         try:
-            messages_to_clear.append(await ctx.send(f"@_everyone\n{ctx.author.mention} has requested give a strike to {', '.join([str(member) for member in members])}. Please have at least two other moderators (and the user who executed the command; so 4 total reactions) react with ✅ to confirm this action."))
+            messages_to_clear.append(await ctx.send(f"@everyone\n{ctx.author.mention} has requested give a strike to {', '.join([str(member) for member in members])}. Please have at least two other moderators (and the user who executed the command; so 4 total reactions) react with ✅ to confirm this action."))
             await messages_to_clear[-1].add_reaction("✅")
             _, _ = await self.bot.wait_for("reaction_add", timeout=60, check=check_mod_vote)
             messages_to_clear.append(await ctx.send(f"Action Approved: Adding strike and messaging user{'s' if len(members) > 1 else ''}..."))
