@@ -167,11 +167,11 @@ class Moderation(commands.Cog, name="Mod Only"):
         confirm_message = await ctx.send(f"@everyone\n{ctx.author} has requested to look for a private message with the following id: `{message_id}`. Please have at least two other moderators (and the user who executed the command; so 4 total reactions) react with ✅ to confirm this action.")
         await confirm_message.add_reaction("✅")
 
-        def check(reaction, user):
+        def check_mod_vote(reaction, user):
             return str(reaction.emoji) == "✅" and reaction.count >= 4 and "overseers" in str(user.roles)
         
         try:
-            _, _ = await self.bot.wait_for("reaction_add", timeout=60, check=check)
+            _, _ = await self.bot.wait_for("reaction_add", timeout=60, check=check_mod_vote)
             await ctx.send("Action Approved: Searching for message...")
         except asyncio.TimeoutError:
             await ctx.send("Message has automatically timed out after 60 seconds.")
@@ -185,6 +185,53 @@ class Moderation(commands.Cog, name="Mod Only"):
                             await ctx.send(f"Author: {channel.recipient}\nAuthor ID: `{channel.recipient.id}`")
                             return
         await ctx.send(f"No messages were found with an id of `{message_id}`.\n\nThis may be because the private message is no longer cached, which is a limitation from Discord itself. For the message to be re-cached, the author of the origianl private message will have to send a message to the bot again.")
+    
+
+    @commands.command()
+    @has_permissions(administrator=True)
+    async def strike(self, ctx, members: Greedy[discord.Member], *, reason:str=None):
+        strikes_channel = ctx.guild.get_channel(845013083059257395)
+        if ctx.channel != strikes_channel:
+            await ctx.message.delete()
+            await ctx.author.send(f"This command can only be used in {strikes_channel.mention}. Please re-use the command in the proper channel.")
+            return
+
+        if members is None:
+            await ctx.send("Make sure to include at least one member when running the command.")
+            return
+        
+        messages_to_clear = [ctx.message]
+        approved_by = []
+        
+        def check_author(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+
+        if reason is None:
+            try: 
+                messages_to_clear.append(await ctx.send("You didn't give a reason when running the command, please include one now or simply say 'N/A'."))
+                reason = await self.bot.wait_for("message", check=check_author, timeout=30.0).content
+            except asyncio.TimeoutError:
+                await ctx.send("This message has timed automatically after 30 seconds, please try again.", delete_after=10)
+        
+        def check_mod_vote(reaction, user):
+            if str(reaction.emoji) == "✅" and reaction.count >= 4 and "overseers" in str(user.roles):
+                approved_by.append(f"{user.mention}\n")
+                return True
+        
+        try:
+            messages_to_clear.append(await ctx.send(f"@_everyone\n{ctx.author.mention} has requested give a strike to {', '.join([str(member) for member in members])}. Please have at least two other moderators (and the user who executed the command; so 4 total reactions) react with ✅ to confirm this action."))
+            await messages_to_clear[-1].add_reaction("✅")
+            _, _ = await self.bot.wait_for("reaction_add", timeout=60, check=check_mod_vote)
+            messages_to_clear.append(await ctx.send(f"Action Approved: Adding strike and messaging user{'s' if len(members) > 1 else ''}..."))
+        except asyncio.TimeoutError:
+            await ctx.send("Message has automatically timed out after 60 seconds.", delete_after=10)
+            return
+        
+        for member in members:
+            await member.send(f"Attention {member},\nYou have recieved a strike in {ctx.guild.name} for the following reason.\n> {reason + '.' if not reason.endswith('.') else ''}")
+            [await message.delete() for message in messages_to_clear]
+
+            await strikes_channel.send(f"{member} (`{member.id}`) has received a strike by {ctx.author.mention} for the following reason:\n> {reason}\n\nAction approved by:\n{''.join(approved_by)}")
 
 
 def setup(bot):
