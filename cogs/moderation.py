@@ -219,7 +219,7 @@ class Moderation(commands.Cog, name="Mod Only"):
                 return True
         
         try:
-            messages_to_clear.append(await ctx.send(f"@_everyone\n{ctx.author.mention} has requested give a strike to {', '.join([str(member) for member in members])}. Please have at least two other moderators (and the user who executed the command; so 4 total reactions) react with ✅ to confirm this action."))
+            messages_to_clear.append(await ctx.send(f"@everyone\n{ctx.author.mention} has requested give a strike to {', '.join([str(member) for member in members])}. Please have at least two other moderators (and the user who executed the command; so 4 total reactions) react with ✅ to confirm this action."))
             await messages_to_clear[-1].add_reaction("✅")
             _, _ = await self.bot.wait_for("reaction_add", timeout=60, check=check_mod_vote)
             messages_to_clear.append(await ctx.send(f"Action Approved: Adding strike and messaging user{'s' if len(members) > 1 else ''}..."))
