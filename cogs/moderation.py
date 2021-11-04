@@ -230,12 +230,13 @@ class Moderation(commands.Cog, name="Mod Only"):
         reason += "." if not reason.endswith(".") else ""
         
         for member in members:
-            strike_embed = discord.Embed(description="", color=self.bot.transparent_color)
+            strike_embed = discord.Embed(description="", color=self.bot.transparent_color, timestamp=datetime.utcnow())
             strike_embed.description = f"Attention {member},\nYou have recieved a strike in {ctx.guild.name} for the following reason.\n> {reason}"
             await member.send(embed=strike_embed)
             [await message.delete() for message in messages_to_clear]
 
             strike_embed.description = f"{member} (`{member.id}`) has received a strike by {ctx.author.mention} for the following reason:\n> {reason}\n\nAction approved by:\n{''.join(approved_by)}"
+            strike_embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
             await strikes_channel.send(embed=strike_embed)
 
 
