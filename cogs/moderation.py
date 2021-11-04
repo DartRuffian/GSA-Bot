@@ -214,12 +214,12 @@ class Moderation(commands.Cog, name="Mod Only"):
                 await ctx.send("This message has timed automatically after 30 seconds, please try again.", delete_after=10)
         
         def check_mod_vote(reaction, user):
-            if str(reaction.emoji) == "✅" and reaction.count >= 4 and "overseers" in str(user.roles):
+            if str(reaction.emoji) == "✅" and reaction.count >= 2 and "overseers" in str(user.roles):
                 approved_by.append(f"{user.mention}\n")
                 return True
         
         try:
-            messages_to_clear.append(await ctx.send(f"@everyone\n{ctx.author.mention} has requested give a strike to {', '.join([str(member) for member in members])}. Please have at least two other moderators (and the user who executed the command; so 4 total reactions) react with ✅ to confirm this action."))
+            messages_to_clear.append(await ctx.send(f"@_everyone\n{ctx.author.mention} has requested give a strike to {', '.join([str(member) for member in members])}. Please have at least two other moderators (and the user who executed the command; so 4 total reactions) react with ✅ to confirm this action."))
             await messages_to_clear[-1].add_reaction("✅")
             _, _ = await self.bot.wait_for("reaction_add", timeout=60, check=check_mod_vote)
             messages_to_clear.append(await ctx.send(f"Action Approved: Adding strike and messaging user{'s' if len(members) > 1 else ''}..."))
@@ -227,11 +227,16 @@ class Moderation(commands.Cog, name="Mod Only"):
             await ctx.send("Message has automatically timed out after 60 seconds.", delete_after=10)
             return
         
+        reason += "." if not reason.endswith(".") else ""
+        
         for member in members:
-            await member.send(f"Attention {member},\nYou have recieved a strike in {ctx.guild.name} for the following reason.\n> {reason + '.' if not reason.endswith('.') else ''}")
+            strike_embed = discord.Embed(description="", color=self.bot.transparent_color)
+            strike_embed.description = f"Attention {member},\nYou have recieved a strike in {ctx.guild.name} for the following reason.\n> {reason}"
+            await member.send(embed=strike_embed)
             [await message.delete() for message in messages_to_clear]
 
-            await strikes_channel.send(f"{member} (`{member.id}`) has received a strike by {ctx.author.mention} for the following reason:\n> {reason}\n\nAction approved by:\n{''.join(approved_by)}")
+            strike_embed.description = f"{member} (`{member.id}`) has received a strike by {ctx.author.mention} for the following reason:\n> {reason}\n\nAction approved by:\n{''.join(approved_by)}"
+            await strikes_channel.send(embed=strike_embed)
 
 
 def setup(bot):
