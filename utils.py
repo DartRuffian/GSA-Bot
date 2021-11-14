@@ -4,6 +4,7 @@
 import discord
 from discord.ext import commands
 from traceback import format_exception
+import os
 
 
 class Utils:
@@ -56,3 +57,9 @@ class Utils:
             message = f"The following error has been flagged as `critical`.\n||<@{bot.owner_id}>||"
         
         return (message, error_embed)
+
+    def log(bot, message: str) -> None:
+        os.chdir(f"{bot.BASE_DIR}/resources")
+        with open("bot.log", "a") as f:
+            f.write(message + "\n\n")
+        os.chdir(bot.BASE_DIR)

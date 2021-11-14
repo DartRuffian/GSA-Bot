@@ -7,6 +7,7 @@ from discord.ext.commands import Greedy
 from emoji import emojize
 from json import load, dump
 from os import chdir
+from utils import Utils
 
 
 class Reaction_Roles(commands.Cog, name="Reaction Roles"):
@@ -26,8 +27,14 @@ class Reaction_Roles(commands.Cog, name="Reaction Roles"):
         for id, data in menu_data.items():
             # Save the key as a discord message object
             channel_id, message_id = id.split("-")
-            channel = self.bot.get_channel(int(channel_id))
-            message = await channel.fetch_message(int(message_id))
+            try:
+                channel = self.bot.get_channel(int(channel_id))
+                message = await channel.fetch_message(int(message_id))
+            except discord.errors.NotFound:
+                # Message was deleted, bot can't view the channel, etc.
+                chdir(self.bot.BASE_DIR)
+                Utils.log(self.bot, f"Failed to load reaction role with id of: `{id}`")
+                continue # continue to next reaction role menu
 
             role_emoji_dict = {}
             # Convert role ids to discord role objects
