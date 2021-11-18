@@ -1,12 +1,12 @@
 # Discord Imports
-import discord
 from discord.ext import commands
 
 # Other Imports
 from utils import Utils
 
-class Error_Handler(commands.Cog):
-    """ Global Error Handler """
+
+class ErrorHandler(commands.Cog):
+    """Global Error Handler"""
     def __init__(self, bot):
         self.bot = bot
 
@@ -21,4 +21,4 @@ class Error_Handler(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Error_Handler(bot))
+    bot.add_cog(ErrorHandler(bot))

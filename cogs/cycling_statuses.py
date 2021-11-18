@@ -5,8 +5,9 @@ from discord.ext import commands, tasks
 # Other Imports
 from random import choice as rand_choice
 
-class Cycling_Statuses(commands.Cog):
-    """ Pick a random status from a list """
+
+class CyclingStatuses(commands.Cog):
+    """Pick a random status from a list"""
     def __init__(self, bot):
         self.bot = bot
         self.statuses = []
@@ -21,4 +22,4 @@ class Cycling_Statuses(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Cycling_Statuses(bot))
+    bot.add_cog(CyclingStatuses(bot))

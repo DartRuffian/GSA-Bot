@@ -1,7 +1,5 @@
 # Discord Imports
-import discord
 from discord.ext import commands
-from discord.ext.commands.core import has_permissions
 
 # Other Imports
 import asyncio
@@ -14,19 +12,18 @@ def to_emoji(i):
 
 
 class Polls(commands.Cog):
-    """ Polling Commands """
+    """Polling Commands"""
 
     def __init__(self, bot):
         self.bot = bot
 
-
-    @commands.command (
+    @commands.command(
         brief="Creates a simple poll",
         description="Creates a poll with a given question, and uses emojis to count votes"
     )
     async def poll(self, ctx, *, question):
-        messages = [ctx.message] # List of messages to delete after creating the poll
-        poll_answers = []        # List of answers to the poll
+        messages = [ctx.message]  # List of messages to delete after creating the poll
+        poll_answers = []         # List of answers to the poll
 
         def check(message):
             return message.author == ctx.author and message.channel == ctx.channel
@@ -55,7 +52,6 @@ class Polls(commands.Cog):
         poll_message = await ctx.send(f"{question}\n\n{answer}\n\n(Poll was created by {ctx.author.mention})")
         for emoji, _ in poll_answers:
             await poll_message.add_reaction(emoji)
-
 
     @poll.error
     async def poll_error(self, ctx, error):

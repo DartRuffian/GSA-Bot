@@ -12,16 +12,17 @@ import io
 from datetime import datetime
 
 
-class Admin_Only(commands.Cog):
-    """ Admin Only commands, generally only meant to be used by the bot author """
+def cleanup_code(content):
+    """Removes code blocks from the code"""
+    if content.startswith("```") and content.endswith("```"):
+        return "\n".join(content.split("\n")[1:-1])
+
+
+class AdminOnly(commands.Cog):
+    """Admin Only commands, generally only meant to be used by the bot author"""
     def __init__(self, bot):
         self.bot = bot
         self._last_result = None
-    
-    def cleanup_code(self, content):
-        """ Removes code blocks from the code """
-        if content.startswith("```") and content.endswith("```"):
-            return "\n".join(content.split("\n")[1:-1])
 
     @commands.command(hidden=True)
     @commands.is_owner()
@@ -38,7 +39,7 @@ class Admin_Only(commands.Cog):
 
         env.update(globals())
 
-        body = self.cleanup_code(body)
+        body = cleanup_code(body)
         stdout = io.StringIO()
 
         to_compile = f"async def func():\n{textwrap.indent(body, '  ')}"
@@ -52,14 +53,14 @@ class Admin_Only(commands.Cog):
         try:
             with redirect_stdout(stdout):
                 ret = await func()
-        except Exception as e:
+        except Exception:
             value = stdout.getvalue()
             await ctx.send(f"```py\n{value}{traceback.format_exc()}\n```")
         else:
             value = stdout.getvalue()
             try:
                 await ctx.message.add_reaction("\u2705")
-            except:
+            except Exception:
                 pass
 
             if ret is None:
@@ -75,7 +76,7 @@ class Admin_Only(commands.Cog):
         hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
         minutes, seconds = divmod(remainder, 60)
         days, hours = divmod(hours, 24)
-        uptime_embed = discord.Embed (
+        uptime_embed = discord.Embed(
             description=f"Uptime for **{self.bot.user.name}**: `{days}d, {hours}h, {minutes}m, {seconds}s`",
             color=self.bot.get_random_color()
         )

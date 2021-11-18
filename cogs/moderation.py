@@ -9,15 +9,17 @@ import asyncio
 
 from discord.ext.commands.core import has_permissions
 
+
 class Moderation(commands.Cog, name="Mod Only"):
-    """ Mod-Specific Commands """
+    """Mod-Specific Commands"""
     def __init__(self, bot):
         self.bot = bot
 
-
-    @commands.command (
+    @commands.command(
         brief="Either deletes a certain number of messages or deletes messages until a certain message is reached.",
-        description="Giving a number of messages to delete will delete that many messages. Giving a message's id will delete all messages in that message's channel (max of 100 messages) and stop after the given message is deleted. Running the command and not specifying a limit or a message, will send a list of all tags.",
+        description="""Giving a number of messages to delete will delete that many messages.
+Giving a message id will delete all messages in that message's channel and stop after the message is deleted (100 max).
+Running the command and not specifying a limit or a message, will send a list of all tags.""",
         aliases=["delete", "del", "clear", "cleanup"]
     )
     @commands.has_permissions(manage_messages=True)
@@ -29,12 +31,12 @@ class Moderation(commands.Cog, name="Mod Only"):
                 "--ib": "Ignore bot messages.",
                 "--content `<text>`": "Will only delete messages that contain the given text."
             }
-            embed = discord.Embed (
+            embed = discord.Embed(
                 description="Here's a list of all possible arguments and what they do.",
                 color=self.bot.transparent_color
             )
             for tag, meaning in args_desc.items():
-                embed.add_field (
+                embed.add_field(
                     name=tag,
                     value=meaning
                 )
@@ -42,7 +44,7 @@ class Moderation(commands.Cog, name="Mod Only"):
             return
 
         await ctx.message.delete()
-        args = [i.strip(" ") for i in args.split("--")[1:]] # get arguments as a list
+        args = [i.strip(" ") for i in args.split("--")[1:]]  # get arguments as a list
         deleted_messages = {}
         text_to_clear = None
         if limit:
@@ -56,7 +58,7 @@ class Moderation(commands.Cog, name="Mod Only"):
                 if "content" in str(args):
                     for tag in args:
                         if tag.startswith("content"):
-                            text_to_clear = tag[len("content "):].lower() # get only the text
+                            text_to_clear = tag[len("content "):].lower()  # get only the text
                     if text_to_clear not in message.content.lower():
                         delete_message = False
                 
@@ -75,12 +77,14 @@ class Moderation(commands.Cog, name="Mod Only"):
                 if message == clear_until[0]:
                     break
         deleted = sum(deleted_messages.values())
-        messages = [f"{f'*Only messages containing the phrase `{text_to_clear}` were deleted*' if text_to_clear is not None else ''}\n{deleted} message{' was' if deleted == 1 else 's were'} removed."]
+        messages = [
+            f"""{f'*Only messages containing `{text_to_clear}` were deleted*"' if text_to_clear is not None else ""}
+{deleted} message{' was' if deleted == 1 else 's were'} removed."""
+        ]
         messages.extend(f"- **{author}**: {count}" for author, count in deleted_messages.items())
         await ctx.send("\n".join(messages), delete_after=10)
 
-    
-    @commands.command (
+    @commands.command(
         aliases=["m"],
         brief="Prevents a user from sending messages.",
         description="Adds a role to the given member that prevents them from sending messages."
@@ -95,19 +99,23 @@ class Moderation(commands.Cog, name="Mod Only"):
         await ctx.send(f"User {target} has been muted for the following reason: `{reason}`")
 
         logging_channel = ctx.guild.get_channel(844690755070328852)
-        mute_embed = discord.Embed (
-            description=f"`{target.nick or target.name}` has been muted by **{ctx.author}**\n[Jump to Message]({ctx.message.jump_url})\n\nReason:\n> {reason}",
+        mute_embed = discord.Embed(
+            description=f"""`{target.display_name}` has been muted by **{ctx.author}**
+[Jump to Message]({ctx.message.jump_url})
+
+Reason:
+> {reason}""",
             timestamp=datetime.utcnow(),
             color=0x5fe468
         )
-        mute_embed.set_author (
+        mute_embed.set_author(
             name=self.bot.user, 
             icon_url=self.bot.user.avatar_url
         )
         mute_embed.set_footer(text=f"Role ID: {mute_role.id}")
         await logging_channel.send(embed=mute_embed)
     
-    @commands.command (
+    @commands.command(
         aliases=["u"],
         brief="Unmutes a user",
         description="Unmutes a user, run the help command for `mute` for more info."
@@ -122,49 +130,58 @@ class Moderation(commands.Cog, name="Mod Only"):
         await ctx.send(f"User {target} has been unmuted for the following reason: `{reason}`")
 
         logging_channel = ctx.guild.get_channel(844690755070328852)
-        mute_embed = discord.Embed (
-            description=f"`{target.nick or target.name}` has been unmuted by **{ctx.author}**\n[Jump to Message]({ctx.message.jump_url})\n\nReason:\n> {reason}",
+        mute_embed = discord.Embed(
+            description=f"""`{target.display_name}` has been unmuted by **{ctx.author}**
+[Jump to Message]({ctx.message.jump_url})
+
+Reason:
+> {reason}""",
             timestamp=datetime.utcnow(),
             color=0xf84b51
         )
-        mute_embed.set_author (
+        mute_embed.set_author(
             name=self.bot.user, 
             icon_url=self.bot.user.avatar_url
         )
         mute_embed.set_footer(text=f"Role ID: {mute_role.id}")
         await logging_channel.send(embed=mute_embed)
-    
 
-    @commands.command (
+    @commands.command(
         brief="Sends a list of all channels who's last message was sent more than two weeks ago.",
         description="Sends a list of all channels who's last message was sent more than two weeks ago."
     )
     @commands.has_permissions(manage_channels=True)
     async def prune(self, ctx):
-        prune_embed = discord.Embed (
-            description="This is a list of all channels who's last message was sent more than two weeks ago. \nChannel Name — Days Since Last Message\n\n",
+        prune_embed = discord.Embed(
+            description="""This is a list of all channels who's last message was sent more than two weeks ago.
+Channel Name — Days Since Last Message""" + "\n\n",
             color=self.bot.get_random_color()
         )
         async with ctx.channel.typing():
             for channel in ctx.guild.text_channels:
                 async for message in channel.history(limit=1):
                     if (datetime.now() - message.created_at) >= timedelta(days=14):
-                        prune_embed.description += f"{channel.mention} — {str(datetime.now() - message.created_at).split(', ')[0]}\n"
+                        days_since_last_message = str(datetime.now() - message.created_at).split(', ')[0]
+                        prune_embed.description += f"{channel.mention} — {days_since_last_message}\n"
             await ctx.message.reply(embed=prune_embed)
 
     @commands.command(aliases=["va"], hidden=True)
     @has_permissions(administrator=True)
     async def view_anon(self, ctx, message_id):
-        #if ctx.channel.id != 844675657304375300: # Admin Chat channel
-        if ctx.channel.id != 903858066573918270: # Testing Channel
+        admin_channel = self.bot.get_guild(844325997566099497).get_channel(844675657304375300)
+        if ctx.channel != admin_channel:
             await ctx.message.delete()
-            await ctx.author.send("This command should only be used in <#844675657304375300> because it reveals private information. Please try again in the proper channel.")
+            await ctx.author.send(f"""This command should only be used in {admin_channel.mention} because it reveals 
+            private information. Please try again in the proper channel.""")
             return
         
         message_id = message_id.replace("-", "/")
         # Jump urls are stored as guild_id/channel_id/message_id
         # When copying a message id it is saved as channel_id-message_id
-        confirm_message = await ctx.send(f"@everyone\n{ctx.author} has requested to look for a private message with the following id: `{message_id}`. Please have at least two other moderators (and the user who executed the command; so 4 total reactions) react with ✅ to confirm this action.")
+        confirm_message = await ctx.send(f"""@everyone
+{ctx.author} has requested to look for a private message with the following id: `{message_id}`.
+Please have at least two other moderators (and the user who executed the command; so 4 total reactions) approve this.
+React with ✅ to confirm this action.""")
         await confirm_message.add_reaction("✅")
 
         def check_mod_vote(reaction, user):
@@ -184,16 +201,18 @@ class Moderation(commands.Cog, name="Mod Only"):
                         if message_id in description:
                             await ctx.send(f"Author: {channel.recipient}\nAuthor ID: `{channel.recipient.id}`")
                             return
-        await ctx.send(f"No messages were found with an id of `{message_id}`.\n\nThis may be because the private message is no longer cached, which is a limitation from Discord itself. For the message to be re-cached, the author of the origianl private message will have to send a message to the bot again.")
-    
+        await ctx.send(f"""No messages were found with an id of `{message_id}`. This may be because the private 
+        message is no longer cached, which is a limitation from Discord itself. For the message to be re-cached, 
+        the author of the original private message will have to send a message to the bot again.""")
 
     @commands.command()
     @has_permissions(administrator=True)
-    async def strike(self, ctx, members: Greedy[discord.Member], *, reason:str=None):
+    async def strike(self, ctx, members: Greedy[discord.Member], *, reason: str = None):
         strikes_channel = ctx.guild.get_channel(845013083059257395)
         if ctx.channel != strikes_channel:
             await ctx.message.delete()
-            await ctx.author.send(f"This command can only be used in {strikes_channel.mention}. Please re-use the command in the proper channel.")
+            await ctx.author.send(f"This command can only be used in {strikes_channel.mention}."
+                                  f"\nPlease re-use the command in the proper channel.")
             return
 
         if members is None:
@@ -208,10 +227,13 @@ class Moderation(commands.Cog, name="Mod Only"):
 
         if reason is None:
             try: 
-                messages_to_clear.append(await ctx.send("You didn't give a reason when running the command, please include one now or simply say 'N/A'."))
+                messages_to_clear.append(await ctx.send("You didn't give a reason when running the command, please "
+                                                        "include one now"))
                 reason = await self.bot.wait_for("message", check=check_author, timeout=30.0).content
             except asyncio.TimeoutError:
-                await ctx.send("This message has timed automatically after 30 seconds, please try again.", delete_after=10)
+                await ctx.send(
+                    "This message has timed automatically after 30 seconds, please try again.", delete_after=10
+                )
         
         def check_mod_vote(reaction, user):
             if str(reaction.emoji) == "✅" and reaction.count >= 4 and "overseers" in str(user.roles):
@@ -219,10 +241,14 @@ class Moderation(commands.Cog, name="Mod Only"):
                 return True
         
         try:
-            messages_to_clear.append(await ctx.send(f"@everyone\n{ctx.author.mention} has requested give a strike to {', '.join([str(member) for member in members])}. Please have at least two other moderators (and the user who executed the command; so 4 total reactions) react with ✅ to confirm this action."))
+            messages_to_clear.append(await ctx.send(f"""@everyone
+{ctx.author.mention} has requested give a strike to {', '.join([str(member) for member in members])}.
+Please have at least two other moderators (and the user who executed the command; so 4 total reactions) confirm this.
+React with ✅ to confirm this action."""))
             await messages_to_clear[-1].add_reaction("✅")
             _, _ = await self.bot.wait_for("reaction_add", timeout=60, check=check_mod_vote)
-            messages_to_clear.append(await ctx.send(f"Action Approved: Adding strike and messaging user{'s' if len(members) > 1 else ''}..."))
+            messages_to_clear.append(await ctx.send("Action Approved: Adding strike and messaging user"
+                                                    f"{'s' if len(members) > 1 else ''}..."))
         except asyncio.TimeoutError:
             await ctx.send("Message has automatically timed out after 60 seconds.", delete_after=10)
             return
@@ -231,11 +257,13 @@ class Moderation(commands.Cog, name="Mod Only"):
         
         for member in members:
             strike_embed = discord.Embed(description="", color=self.bot.transparent_color, timestamp=datetime.utcnow())
-            strike_embed.description = f"Attention {member},\nYou have recieved a strike in {ctx.guild.name} for the following reason.\n> {reason}"
+            strike_embed.description = f"Attention {member},\nYou have received a strike in {ctx.guild.name} for the " \
+                                       f"following reason.\n> {reason} "
             await member.send(embed=strike_embed)
             [await message.delete() for message in messages_to_clear]
 
-            strike_embed.description = f"{member} (`{member.id}`) has received a strike by {ctx.author.mention} for the following reason:\n> {reason}\n\nAction approved by:\n{''.join(approved_by)}"
+            strike_embed.description = f"""{member} (`{member.id}`) has received a strike by {ctx.author.mention} for 
+the following reason:\n> {reason}\n\nAction approved by:\n{''.join(approved_by)}"""
             strike_embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
             await strikes_channel.send(embed=strike_embed)
 

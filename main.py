@@ -13,7 +13,7 @@ from os import listdir, getcwd, environ
 # Define the bot
 intents = discord.Intents.default()
 intents.members = True
-bot = commands.Bot (
+bot = commands.Bot(
     command_prefix=commands.when_mentioned_or("$"),
     owner_id=400337254989430784,
     case_insensitive=True,
@@ -35,7 +35,8 @@ async def on_ready():
     print(f"Username: {bot.user.name}")
     print(f"Userid  : {bot.user.id}")
 
-# Load all cogs in the "cogs" subfolder
+
+# Load all cogs in the "cogs" sub-folder
 for filename in listdir("./cogs"):
     if filename.endswith(".py"):
         bot.load_extension(f"cogs.{filename[:-3]}")
