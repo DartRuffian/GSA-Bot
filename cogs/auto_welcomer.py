@@ -31,21 +31,28 @@ class AutoWelcomer(commands.Cog):
         welcome_channel = get_welcome_channel(member.guild)
         if welcome_channel is not None:
             welcome_embed = create_embed(
-                f"Everyone please welcome {member.mention} to {member.guild.name}!",
+                f"Everyone please welcome {member.mention} to **{member.guild.name}**!",
                 member,
                 0x1dfd00
             )
             await welcome_channel.send(embed=welcome_embed)
-            await member.send("""Welcome to the official **GSA Discord Server for Spring Hill**!
+            if not member.bot:
+                await member.send("""Welcome to the official **GSA Discord Server for Spring Hill**!
 Make sure to read up on our rules in <#937426709492408320> and introduce yourself in <#937429290612580472>.
 You can also customize your roles in <#937429249831354378> and pick whatever applies to you.
 
 Check out <#937427207796699166> if you ever get lost, it has tons of useful links for you!
 Ever miss a meeting? Look at what you missed out on in <#937426750483345428>!""")
+                roles = [937442354770616422, 937432185055625237, 937433865033748491, 937434745187479614]
+            else:
+                roles = [937439201207668757, 937440304036999231]
+
+            [await member.add_roles(member.guild.get_role(role)) for role in roles]
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         welcome_channel = get_welcome_channel(member.guild)
+
         if welcome_channel is not None:
             welcome_embed = create_embed(
                 f"Sorry to see you go {member.mention}, hope to see you again!",
