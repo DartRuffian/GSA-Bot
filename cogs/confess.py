@@ -25,7 +25,6 @@ The command takes a given message and sends it anonymously. Nothing is recorded.
         channel_aliases = {
             "vent-na": 894813821133262878,
             "vent": 888545261675245589,
-            "will": 400337254989430784
         }
 
         def check_trigger_warnings(m):
@@ -63,11 +62,13 @@ The command takes a given message and sends it anonymously. Nothing is recorded.
             return m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in channel_aliases.keys()
         
         try:
-            await ctx.send("Would you like your message to be sent to <#894813821133262878>, <#888545261675245589>, or "
-                           "William (DartRuffian)'s private messages? Respond with `vent-na`, `vent`, or `will` to "
-                           "continue. If you choose to have your message sent to William, please be aware that your "
-                           "discord id will be temporarily saved so that William can respond to it. "
-                           "This information is kept private and deleted once the conversation is over.")
+            # await ctx.send("Would you like your message to be sent to <#894813821133262878>, <#888545261675245589>, or "
+            #                "William (DartRuffian)'s private messages? Respond with `vent-na`, `vent`, or `will` to "
+            #                "continue. If you choose to have your message sent to William, please be aware that your "
+            #                "discord id will be temporarily saved so that William can respond to it. "
+            #                "This information is kept private and deleted once the conversation is over.")
+            clean_channel_list = []
+            await ctx.send("""Would you like your message be sent to """)
             response = await self.bot.wait_for("message", check=check_message_target, timeout=30.0)
         
         except asyncio.TimeoutError:
@@ -215,4 +216,6 @@ The command takes a given message and sends it anonymously. Nothing is recorded.
 
 
 def setup(bot):
-    bot.add_cog(Confessions(bot))
+    # bot.add_cog(Confessions(bot))
+    # Currently unwanted for GSA, will add later if requested
+    ...

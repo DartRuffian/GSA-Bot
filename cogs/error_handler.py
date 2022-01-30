@@ -17,7 +17,7 @@ class ErrorHandler(commands.Cog):
             # If the command already has a specific error handler, don't run anything here
             return
 
-        await Utils.log_error(self.bot, ctx, error)
+        await self.bot.utils.log_error(ctx, error)
 
 
 def setup(bot):

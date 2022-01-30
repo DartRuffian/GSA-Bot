@@ -52,4 +52,4 @@ class ArtUtils(commands.Cog, name="Artist Utilities"):
 
 
 def setup(bot):
-    bot.add_cog(Art_Utils(bot))
+    bot.add_cog(ArtUtils(bot))

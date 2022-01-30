@@ -1,3 +1,4 @@
+""" Main Bot File """
 # Discord Imports
 import discord
 from discord.ext import commands
@@ -5,48 +6,62 @@ from discord.ext import commands
 # Keep Bot Online
 from webserver import keep_alive
 
-# Other imports
-from random import randint
-from datetime import datetime
-from os import listdir, getcwd, environ
-
-# Define the bot
-intents = discord.Intents.default()
-intents.members = True
-bot = commands.Bot(
-    command_prefix=commands.when_mentioned_or("$"),
-    owner_id=400337254989430784,
-    case_insensitive=True,
-    intents=intents,
-)
-
-# Other attributes
-bot.AUTHOR = 400337254989430784
-bot.BASE_DIR = getcwd()
-bot.get_random_color = lambda: int("%06x" % randint(0, 0xFFFFFF), 16)
-bot.transparent_color = 0x2F3136
-bot.launch_time = datetime.utcnow()
+# Other Imports
+from datetime import datetime            # Get bot launch time
+from os import listdir, getcwd, environ  # Load cogs/environment vars (token)
+from utils import Utils                  # Utility functions
+from random import randint               # Random Color
 
 
-@bot.event 
-async def on_ready():
-    # Called when the bot connects to Discord
-    print("Logged in")
-    print(f"Username: {bot.user.name}")
-    print(f"Userid  : {bot.user.id}")
+def get_token() -> str:
+    # Load token
+    try:
+        # If running locally
+        with open("tokens.txt", "r") as f:
+            token = f.read().split("\n")[0]
+    except FileNotFoundError:
+        # If running on server
+        token = environ.get("DISCORD_BOT_SECRET")
+
+    return token
 
 
-# Load all cogs in the "cogs" sub-folder
-for filename in listdir("./cogs"):
-    if filename.endswith(".py"):
-        bot.load_extension(f"cogs.{filename[:-3]}")
+def main() -> None:
+    # Define the bot
+    intents = discord.Intents.default()
+    intents.members = True
+    intents.presences = True
+    intents.emojis = True
+    bot = commands.Bot(
+        command_prefix=commands.when_mentioned_or("$"),
+        owner_id=400337254989430784,
+        case_insensitive=True,
+        intents=intents,
+    )
+
+    # Custom Attributes
+    bot.BASE_DIR = getcwd()
+    bot.LAUNCH_TIME = datetime.utcnow()
+    bot.utils = Utils(bot)
+    bot.get_random_color = lambda: int("%06x" % randint(0, 0xFFFFFF), 16)
+    bot.TRANSPARENT_COLOR = 0x2F3136
+
+    # Load all cogs
+    for filename in listdir("./cogs"):
+        if filename.endswith(".py"):
+            bot.load_extension(f"cogs.{filename[:-3]}")
+
+    @bot.event
+    async def on_ready():
+        # Called whenever the bot connects to Discord
+        print("Logged in")
+        print(f"Username: {bot.user.name}")
+        print(f"User Id : {bot.user.id}")
+
+    keep_alive()
+    TOKEN = get_token()
+    bot.run(TOKEN)
 
 
-keep_alive()
-try:
-    with open("tokens.txt", "r") as f:
-        TOKEN = f.read().split("\n")[0]
-except FileNotFoundError:
-    TOKEN = environ.get("DISCORD_BOT_SECRET") 
-
-bot.run(TOKEN)
+if __name__ == "__main__":
+    main()

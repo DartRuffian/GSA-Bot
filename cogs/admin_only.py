@@ -84,4 +84,4 @@ class AdminOnly(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Admin_Only(bot))
+    bot.add_cog(AdminOnly(bot))

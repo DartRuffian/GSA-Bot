@@ -10,13 +10,13 @@ class Welcomer(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        if member.guild == 844325997566099497:
-            await member.send("Welcome to the official GSA discord server for Spring Hill!"
-                              "\nTo \"officially\" join the server, write up an intro for yourself in "
-                              "<#844658740451606559> and read the <#844663424679804929> channel!"
-                              "\nAfter doing both of those, hit the green checkmark in the rules channel to be given"
-                              "access to the rest of the server!\n\nDon't forget to check out <#844690788943396866> as"
-                              "well, where you can pick whatever roles apply to you!")
+        if member.guild == 937426313998917692:
+            await member.send("""Welcome to the official **GSA Discord Server for Spring Hill**!
+Make sure to read up on our rules in <#937426709492408320> and introduce yourself in <#937429290612580472>.
+You can also customize your roles in <#937429249831354378> and pick whatever applies to you.
+
+Check out <#937427207796699166> if you ever get lost, it has tons of useful links for you!
+Ever miss a meeting? Look at what you missed out on in <#937426750483345428>!""")
 
 
 def setup(bot):
