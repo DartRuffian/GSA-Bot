@@ -58,6 +58,9 @@ def main() -> None:
         print(f"Username: {bot.user.name}")
         print(f"User Id : {bot.user.id}")
 
+        bot.guild = bot.get_guild(937426313998917692)
+        bot.log_channel = bot.guild.get_channel(937924972695941171)
+
     keep_alive()
     TOKEN = get_token()
     bot.run(TOKEN)

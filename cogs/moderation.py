@@ -98,7 +98,7 @@ Running the command and not specifying a limit or a message, will send a list of
         await target.add_roles(mute_role, reason=reason)
         await ctx.send(f"User {target} has been muted for the following reason: `{reason}`")
 
-        logging_channel = ctx.guild.get_channel(937444958414188554)
+        logging_channel = self.bot.guild.get_channel(937924972695941171)
         mute_embed = discord.Embed(
             description=f"""`{target.display_name}` has been muted by **{ctx.author}**
 [Jump to Message]({ctx.message.jump_url})
@@ -129,7 +129,7 @@ Reason:
         await target.remove_roles(mute_role, reason=reason)
         await ctx.send(f"User {target} has been unmuted for the following reason: `{reason}`")
 
-        logging_channel = ctx.guild.get_channel(937444958414188554)
+        logging_channel = self.bot.guild.get_channel(937924972695941171)
         mute_embed = discord.Embed(
             description=f"""`{target.display_name}` has been unmuted by **{ctx.author}**
 [Jump to Message]({ctx.message.jump_url})
