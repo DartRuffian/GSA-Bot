@@ -59,6 +59,9 @@ class Logger(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        if message.guild.id != 937426313998917692:
+            return
+
         if check_channel(message.channel.id):
             return
 
@@ -100,6 +103,9 @@ class Logger(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
+        if message.guild.id != 937426313998917692:
+            return
+
         if check_channel(before.channel.id):
             return
 
@@ -129,6 +135,9 @@ class Logger(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
+        if message.guild.id != 937426313998917692:
+            return
+
         if check_channel(message.channel.id):
             return
 
