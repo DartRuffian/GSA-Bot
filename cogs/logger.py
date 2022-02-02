@@ -48,7 +48,7 @@ def clean_msg(message: str) -> str:
 
 def check_channel(channel_id: int) -> bool:
     """Returns True if a given channel id is a list of channels to ignore logging in"""
-    return channel_id in [937444414324887572, 937924972695941171, 937900839400513576]
+    return channel_id in [937444414324887572, 937924972695941171, 937900839400513576, 938246207879381012]
 
 
 class Logger(commands.Cog):
